@@ -39,7 +39,7 @@ public class PojoJava2PcmCodeToSeffFactory implements Code2SeffFactory {
 
 	@Override
 	public AbstractFunctionClassificationStrategy createAbstractFunctionClassificationStrategy(
-			final BasicComponentFinding basicComponentFinding, final EditableCorrespondenceModelView<Correspondence> correspondenceModel,
+			final EditableCorrespondenceModelView<Correspondence> correspondenceModel, final BasicComponentFinding basicComponentFinding,
 			final BasicComponent basicComponent) {
 		return new FunctionClassificationStrategyForPackageMapping(basicComponentFinding, correspondenceModel,
 				basicComponent);

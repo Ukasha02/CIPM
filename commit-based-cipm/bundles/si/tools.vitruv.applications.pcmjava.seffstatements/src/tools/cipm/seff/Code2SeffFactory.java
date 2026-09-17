@@ -19,6 +19,6 @@ public interface Code2SeffFactory {
     		EditableCorrespondenceModelView<Correspondence> correspondenceModel);
 
     AbstractFunctionClassificationStrategy createAbstractFunctionClassificationStrategy(
-            BasicComponentFinding basicComponentFinding, EditableCorrespondenceModelView<Correspondence> correspondenceModel,
+            EditableCorrespondenceModelView<Correspondence> correspondenceModel, BasicComponentFinding basicComponentFinding,
             BasicComponent basicComponent);
 }

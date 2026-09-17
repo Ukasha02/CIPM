@@ -39,7 +39,7 @@ public class CommitIntegrationCodeToSeffFactory implements Code2SeffFactory {
 
 	@Override
 	public AbstractFunctionClassificationStrategy createAbstractFunctionClassificationStrategy(
-			BasicComponentFinding basicComponentFinding, EditableCorrespondenceModelView<Correspondence> correspondenceModel,
+			EditableCorrespondenceModelView<Correspondence> correspondenceModel, BasicComponentFinding basicComponentFinding,
 			BasicComponent basicComponent) {
 		return new FunctionClassificationStrategyForCommitIntegration(basicComponentFinding, correspondenceModel, basicComponent);
 	}

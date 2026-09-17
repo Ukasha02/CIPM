@@ -52,8 +52,8 @@ class Java2PcmMethodBodyChangePreprocessor extends AbstractChangePropagationSpec
 		val basicComponentFinding = code2SeffFactory.createBasicComponentFinding
 		val BasicComponent myBasicComponent = basicComponentFinding.findBasicComponentForMethod(newMethod,
 			correspondenceModel);
-		val classification = code2SeffFactory.createAbstractFunctionClassificationStrategy(basicComponentFinding,
-			correspondenceModel, myBasicComponent);
+		val classification = code2SeffFactory.createAbstractFunctionClassificationStrategy(correspondenceModel,
+			basicComponentFinding, myBasicComponent);
 		val InterfaceOfExternalCallFindingFactory interfaceOfExternalCallFindingFactory = code2SeffFactory.
 			createInterfaceOfExternalCallFindingFactory(correspondenceModel, myBasicComponent);
 		val ResourceDemandingBehaviourForClassMethodFinding resourceDemandingBehaviourForClassMethodFinding =
