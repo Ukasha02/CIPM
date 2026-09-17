@@ -48,7 +48,7 @@ class Java2PcmMethodBodyChangePreprocessor extends AbstractChangePropagationSpec
 	}
 
 	private def void executeClassMethodBodyChangeRefiner(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
-		UserInteractor userInteracting, Method newMethod) {
+		UserInteractor userInteractor, Method newMethod) {
 		val basicComponentFinding = code2SeffFactory.createBasicComponentFinding
 		val BasicComponent myBasicComponent = basicComponentFinding.findBasicComponentForMethod(newMethod,
 			correspondenceModel);
@@ -61,7 +61,7 @@ class Java2PcmMethodBodyChangePreprocessor extends AbstractChangePropagationSpec
 		val ClassMethodBodyChangedTransformation methodBodyChanged = createTransformation(
 			newMethod, basicComponentFinding, classification, interfaceOfExternalCallFindingFactory,
 			resourceDemandingBehaviourForClassMethodFinding);
-		methodBodyChanged.execute(correspondenceModel, userInteracting);
+		methodBodyChanged.execute(correspondenceModel, userInteractor);
 	}
 	
 	protected def ClassMethodBodyChangedTransformation createTransformation(Method newMethod,

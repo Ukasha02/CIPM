@@ -64,8 +64,8 @@ public class ExtendedClassMethodBodyChangedTransformation extends ClassMethodBod
 	 */
 	@Override
 	public void execute(final EditableCorrespondenceModelView<Correspondence> correspondenceModel,
-			final UserInteractor userInteracting) {
-		super.execute(correspondenceModel, userInteracting);
+			final UserInteractor userInteractor) {
+		super.execute(correspondenceModel, userInteractor);
 		var decorator = super.getSourceCodeDecoratorRepository();
 		if (decorator != null) {
 			// 5) Link the abstract actions with their corresponding statements.

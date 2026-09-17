@@ -81,10 +81,10 @@ public class ClassMethodBodyChangedTransformation {
 	 * 3) reconnect the newly extracted SEFF elements with the old elements.
 	 * 
 	 * @param correspondenceModel the current correspondence model.
-	 * @param userInteracting the user interactor.
+	 * @param userInteractor the user interactor.
 	 */
 	public void execute(final EditableCorrespondenceModelView<Correspondence> correspondenceModel,
-			final UserInteractor userInteracting) {
+			final UserInteractor userInteractor) {
 		if (!this.isArchitectureRelevantChange(correspondenceModel)) {
 			LOGGER.debug("Change within the method: " + this.newMethod
 					+ " is not an architecture relevant change");

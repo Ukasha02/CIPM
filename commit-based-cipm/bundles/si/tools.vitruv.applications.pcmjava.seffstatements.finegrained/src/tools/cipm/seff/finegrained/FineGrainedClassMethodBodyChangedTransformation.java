@@ -61,7 +61,7 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 	 * existing SEFF.
 	 */
 	@Override
-	public void execute(final EditableCorrespondenceModelView<Correspondence> correspondenceModel, final UserInteractor userInteracting) {
+	public void execute(final EditableCorrespondenceModelView<Correspondence> correspondenceModel, final UserInteractor userInteractor) {
 		if (!this.isArchitectureRelevantChange(correspondenceModel)) {
 			LOGGER.debug("Change within the method " + this.newMethod + " is not an architecture-relevant change.");
 			return;
