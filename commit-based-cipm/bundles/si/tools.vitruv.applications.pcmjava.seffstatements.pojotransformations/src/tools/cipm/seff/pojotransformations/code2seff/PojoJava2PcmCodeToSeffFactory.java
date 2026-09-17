@@ -12,6 +12,11 @@ import tools.cipm.seff.Code2SeffFactory;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
+/**
+ * {@link Code2SeffFactory} for the plain package-mapping reconstruction, where components
+ * are derived from the Java package structure. This is the default set of finders and
+ * strategy that the other factories build on.
+ */
 public class PojoJava2PcmCodeToSeffFactory implements Code2SeffFactory {
 
 	@Override

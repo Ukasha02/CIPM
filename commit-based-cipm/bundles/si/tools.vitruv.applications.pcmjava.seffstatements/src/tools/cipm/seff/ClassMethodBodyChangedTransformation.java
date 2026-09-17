@@ -220,6 +220,14 @@ public class ClassMethodBodyChangedTransformation {
 		EcoreUtil.remove(obj);
 	}
 
+	/**
+	 * Finds the RD behaviour that newly extracted SEFF elements for {@link #newMethod}
+	 * should be inserted into.
+	 *
+	 * @param correspondenceModel the current correspondence model.
+	 * @return the corresponding RD behaviour, or {@code null} if the method has none
+	 *         (a warning is logged in that case).
+	 */
 	protected ResourceDemandingBehaviour findRdBehaviorToInsertElements(final EditableCorrespondenceModelView<Correspondence> correspondenceModel) {
 		final List<ResourceDemandingBehaviour> correspondingResourceDemandingBehaviours =
 			CorrespondenceModelUtil.getCorrespondingEObjects(correspondenceModel, this.newMethod, ResourceDemandingBehaviour.class);
@@ -231,6 +239,11 @@ public class ClassMethodBodyChangedTransformation {
 		return correspondingResourceDemandingBehaviours.iterator().next();
 	}
 	
+	/**
+	 * Returns the source-code-decorator repository produced while running SoMoX for this
+	 * method. It is {@code null} until {@link #execute} has run SoMoX (i.e. only meaningful
+	 * after {@code execute} has processed an architecture-relevant change).
+	 */
 	protected SourceCodeDecoratorRepository getSourceCodeDecoratorRepository() {
 		return sourceCodeDecorator;
 	}

@@ -8,6 +8,11 @@ import org.eclipse.emf.ecore.EObject;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
+/**
+ * Static convenience methods over {@link EditableCorrespondenceModelView}: looking up
+ * corresponding {@link EObject}s filtered by a target type, and removing correspondences
+ * for one or more objects. Not instantiable.
+ */
 public final class CorrespondenceModelUtil {
 	private CorrespondenceModelUtil() {}
 	

@@ -17,6 +17,12 @@ import org.palladiosimulator.pcm.PcmPackage
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView
 import tools.vitruv.change.correspondence.Correspondence
 
+/**
+ * Change-propagation preprocessor that reconstructs a method's SEFF when the method
+ * changes. It builds a {@link ClassMethodBodyChangedTransformation} from the given
+ * {@link Code2SeffFactory} and runs it. Subclasses override {@link #createTransformation}
+ * to supply a more specific transformation (see the extended and fine-grained variants).
+ */
 class Java2PcmMethodBodyChangePreprocessor extends AbstractChangePropagationSpecification {
 	val Code2SeffFactory code2SeffFactory;
 	

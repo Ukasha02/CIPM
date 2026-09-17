@@ -9,6 +9,12 @@ import tools.cipm.seff.ClassMethodBodyChangedTransformation
 import tools.cipm.seff.BasicComponentFinding
 import tools.cipm.seff.Code2SeffFactory
 
+/**
+ * {@link Java2PcmMethodBodyChangePreprocessor} variant that builds an
+ * {@link ExtendedClassMethodBodyChangedTransformation}: it additionally links the
+ * reconstructed SEFF actions to their source statements (needed for instrumentation) and
+ * can be configured to generate internal-call actions.
+ */
 class ExtendedJava2PcmMethodBodyChangePreprocessor extends Java2PcmMethodBodyChangePreprocessor {
 	val boolean shouldGenerateInternalCallActions;
 
