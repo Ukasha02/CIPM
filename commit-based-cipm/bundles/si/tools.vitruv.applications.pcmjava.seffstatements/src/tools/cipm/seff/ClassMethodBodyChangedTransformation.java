@@ -97,6 +97,9 @@ public class ClassMethodBodyChangedTransformation {
 		// 2)
 		final ResourceDemandingBehaviour resourceDemandingBehaviour = this
 				.findRdBehaviorToInsertElements(correspondenceModel);
+		if (resourceDemandingBehaviour == null) {
+			return;
+		}
 		final BasicComponent basicComponent = this.basicComponentFinder.findBasicComponentForMethod(this.newMethod,
 				correspondenceModel);
 		this.executeSoMoXForMethod(basicComponent, resourceDemandingBehaviour);
