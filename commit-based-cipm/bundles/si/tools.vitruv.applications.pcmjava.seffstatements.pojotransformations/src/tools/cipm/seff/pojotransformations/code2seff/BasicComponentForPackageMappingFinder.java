@@ -67,6 +67,9 @@ public class BasicComponentForPackageMappingFinder implements BasicComponentFind
             final int newLength = packageURIString.length() - lastSegment.length();
             packageURIString = packageURIString.substring(0, newLength);
             packageURIString = packageURIString + "package-info.java";
+        } else {
+            LOGGER.warn("Could not strip the last segment '" + lastSegment + "' from URI '" + packageURIString
+                    + "' when creating the dummy package resource; using the URI unmodified.");
         }
         final URI packageVuri = URI.createURI(packageURIString);
         final Resource dummyResource = this.dummyResourceSet.createResource(packageVuri);
