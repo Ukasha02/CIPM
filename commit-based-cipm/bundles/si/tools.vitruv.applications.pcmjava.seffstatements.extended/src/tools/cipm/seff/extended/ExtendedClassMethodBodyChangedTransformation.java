@@ -30,7 +30,7 @@ import tools.vitruv.change.interaction.UserInteractor;
  * @author Martin Armbruster
  */
 public class ExtendedClassMethodBodyChangedTransformation extends ClassMethodBodyChangedTransformation {
-	private boolean shouldGenerateInternalCallActions;
+	private final boolean shouldGenerateInternalCallActions;
 	
 	public ExtendedClassMethodBodyChangedTransformation(final Method newMethod,
 			final BasicComponentFinding basicComponentFinder,

@@ -10,7 +10,7 @@ import tools.cipm.seff.BasicComponentFinding
 import tools.cipm.seff.Code2SeffFactory
 
 class ExtendedJava2PcmMethodBodyChangePreprocessor extends Java2PcmMethodBodyChangePreprocessor {
-	boolean shouldGenerateInternalCallActions;
+	val boolean shouldGenerateInternalCallActions;
 
 	new() {
 		this(new CommitIntegrationCodeToSeffFactory)

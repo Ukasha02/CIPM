@@ -225,7 +225,7 @@ public class ClassMethodBodyChangedTransformation {
 			CorrespondenceModelUtil.getCorrespondingEObjects(correspondenceModel, this.newMethod, ResourceDemandingBehaviour.class);
 		if (null == correspondingResourceDemandingBehaviours || correspondingResourceDemandingBehaviours.isEmpty()) {
 			LOGGER.warn("No ResourceDemandingBehaviours found for method " + this.newMethod
-					+ ". Could not create ResourceDemandingBehavoir to insert SEFF elements");
+					+ ". Could not create ResourceDemandingBehaviour to insert SEFF elements");
 			return null;
 		}
 		return correspondingResourceDemandingBehaviours.iterator().next();
