@@ -103,7 +103,7 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 
 		// If the old SEFF is empty, all new AbstractActions are added.
 		if (listOldAbstractActions.size() == 0) {
-			rdbDifference.getAddedAbstractActions().addAll(listNewAbstractActions);
+			rdbDifference.addAddedAbstractActions(listNewAbstractActions);
 			return;
 		}
 
@@ -113,14 +113,14 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 		// Find deleted AbstractActions.
 		for (AbstractAction oldAbstractAction : listOldAbstractActions) {
 			if (!rdbDifference.hasOldAbstractActionMatching(oldAbstractAction)) {
-				rdbDifference.getDeletedAbstractActions().add(oldAbstractAction);
+				rdbDifference.addDeletedAbstractAction(oldAbstractAction);
 			}
 		}
 
 		// Find added AbstractActions.
 		for (AbstractAction newAbstractAction : listNewAbstractActions) {
 			if (!rdbDifference.hasNewAbstractActionMatching(newAbstractAction)) {
-				rdbDifference.getAddedAbstractActions().add(newAbstractAction);
+				rdbDifference.addAddedAbstractAction(newAbstractAction);
 			}
 		}
 	}
@@ -154,12 +154,12 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 						newAbstractActionStatements, oldAbstractActionStatements);
 
 				if (newAbstractActionStatements.size() == similarStatementsCount) {
-					rdbDifference.getUnmodifiedAbstractActions()
-							.add(new AbstractActionMatching(newAbstractAction, oldAbstractAction));
+					rdbDifference.addUnmodifiedAbstractAction(
+							new AbstractActionMatching(newAbstractAction, oldAbstractAction));
 					break;
 				} else if (similarStatementsCount != 0) {
-					rdbDifference.getModifiedAbstractActions()
-							.add(new AbstractActionMatching(newAbstractAction, oldAbstractAction));
+					rdbDifference.addModifiedAbstractAction(
+							new AbstractActionMatching(newAbstractAction, oldAbstractAction));
 					break;
 				}
 			}
@@ -269,7 +269,7 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 	private void addChangedAbstractActions(List<AbstractAction> oldActions, ResourceDemandingBehaviour newSeff) {
 		for (AbstractAction newAction : newSeff.getSteps_Behaviour()) {
 			var matching = rdbDifference.getNewAbstractActionMatching(newAction);
-			if (matching != null && rdbDifference.getModifiedAbstractActions().contains(matching)) {
+			if (matching != null && rdbDifference.isModified(matching)) {
 				int oldIndex = oldActions.indexOf(matching.getOldAbstractAction());
 				oldActions.set(oldIndex, newAction);
 			}
