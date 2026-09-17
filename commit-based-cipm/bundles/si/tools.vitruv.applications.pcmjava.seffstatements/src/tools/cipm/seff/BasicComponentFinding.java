@@ -8,6 +8,6 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
 public interface BasicComponentFinding {
 
-    BasicComponent findBasicComponentForMethod(Method newMethod, EditableCorrespondenceModelView<Correspondence> ci);
+    BasicComponent findBasicComponentForMethod(Method newMethod, EditableCorrespondenceModelView<Correspondence> correspondenceModel);
 
 }

@@ -11,37 +11,37 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 public final class CorrespondenceModelUtil {
 	private CorrespondenceModelUtil() {}
 	
-	public static <TCorrespondingType> List<TCorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> cm,
+	public static <TCorrespondingType> List<TCorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
 			EObject object, Class<TCorrespondingType> type) {
-		return getCorrespondingEObjects(cm, List.of(object), type);
+		return getCorrespondingEObjects(correspondenceModel, List.of(object), type);
 	}
-	
-	public static <TCorrespondingType> List<TCorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> cm,
+
+	public static <TCorrespondingType> List<TCorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
 			List<EObject> objects, Class<TCorrespondingType> type) {
-		return cm.getCorrespondingEObjects(objects).parallelStream().flatMap(list -> list.parallelStream())
+		return correspondenceModel.getCorrespondingEObjects(objects).parallelStream().flatMap(list -> list.parallelStream())
 			.filter(obj -> type.isInstance(obj)).map(obj -> type.cast(obj)).collect(Collectors.toList());
 	}
-	
-	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> cm,
+
+	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
 			EObject object) {
-		removeCorrespondencesFor(cm, object, null);
+		removeCorrespondencesFor(correspondenceModel, object, null);
 	}
-	
-	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> cm,
+
+	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
 			EObject object, String tag) {
-		removeCorrespondencesFor(cm, List.of(object), tag);
+		removeCorrespondencesFor(correspondenceModel, List.of(object), tag);
 	}
-	
-	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> cm,
+
+	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
 			List<EObject> objects) {
-		removeCorrespondencesFor(cm, objects, null);
+		removeCorrespondencesFor(correspondenceModel, objects, null);
 	}
-	
-	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> cm,
+
+	public static void removeCorrespondencesFor(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
 			List<EObject> objects, String tag) {
-		var allCorrespondingElements = cm.getCorrespondingEObjects(objects, tag);
+		var allCorrespondingElements = correspondenceModel.getCorrespondingEObjects(objects, tag);
 		for (var corresponding : allCorrespondingElements) {
-			cm.removeCorrespondencesBetween(objects, corresponding, tag);
+			correspondenceModel.removeCorrespondencesBetween(objects, corresponding, tag);
 		}
 	}
 }
