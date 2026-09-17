@@ -80,12 +80,12 @@ public class ExtendedClassMethodBodyChangedTransformation extends ClassMethodBod
 
         for (SeffElementSourceCodeLink seffElementSourceCodeLink : seffElementSourceCodeLinks) {
             if (seffElementSourceCodeLink.getSeffElement() instanceof AbstractAction) {
-            	AbstractAction ab = (AbstractAction) seffElementSourceCodeLink.getSeffElement();
+            	AbstractAction action = (AbstractAction) seffElementSourceCodeLink.getSeffElement();
             	// Actions in ResourceDemandingInternalBehaviours are ignored.
-            	if (this.isContainedInResourceDemandingInternalBehaviour(ab)) {
+            	if (this.isContainedInResourceDemandingInternalBehaviour(action)) {
             		continue;
             	}
-            	List<EObject> actionList = Lists.newArrayList(ab);
+            	List<EObject> actionList = Lists.newArrayList(action);
 	            for (Statement statement : seffElementSourceCodeLink.getStatement()) {
                     correspondenceModel.addCorrespondenceBetween(actionList, Lists.newArrayList(statement), "");
 	            }
