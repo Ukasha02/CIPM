@@ -211,16 +211,11 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 	}
 
 	private void mergeDifferences(ResourceDemandingBehaviour rdBehavior, ResourceDemandingBehaviour newSeff) {
-		final List<AbstractAction> steps = rdBehavior.getSteps_Behaviour();
+		// The StartAction has to be in place before the actions below are inserted,
+		// because addNewAbstractActions inserts at index 1 to skip over it.
+		ensureStartAndStopAction(rdBehavior);
 
-		final boolean addStartAction = 0 == steps.size() || !(steps.get(0) instanceof StartAction);
-		final boolean addStopAction = 0 == steps.size() || !(steps.get(steps.size() - 1) instanceof StopAction);
-		if (addStartAction) {
-			rdBehavior.getSteps_Behaviour().add(0, SeffFactory.eINSTANCE.createStartAction());
-		}
-		if (addStopAction) {
-			rdBehavior.getSteps_Behaviour().add(SeffFactory.eINSTANCE.createStopAction());
-		}
+		final List<AbstractAction> steps = rdBehavior.getSteps_Behaviour();
 
 		this.removeOldAbstractActions(steps);
 

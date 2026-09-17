@@ -102,7 +102,7 @@ public class ClassMethodBodyChangedTransformation {
 		this.executeSoMoXForMethod(basicComponent, resourceDemandingBehaviour);
 
 		// 3)
-		this.connectCreatedResourceDemandingBehaviour(resourceDemandingBehaviour, correspondenceModel);
+		this.connectCreatedResourceDemandingBehaviour(resourceDemandingBehaviour);
 	}
 
 	/**
@@ -159,19 +159,32 @@ public class ClassMethodBodyChangedTransformation {
 
 	}
 
-	private void connectCreatedResourceDemandingBehaviour(final ResourceDemandingBehaviour rdBehavior,
-			final EditableCorrespondenceModelView<Correspondence> ci) {
+	/**
+	 * Ensures that the given ResourceDemandingBehaviour starts with a StartAction
+	 * and ends with a StopAction, adding whichever of the two is missing. Any
+	 * actions already present are left untouched.
+	 *
+	 * Callers that also need the actions to be linked to each other have to invoke
+	 * {@link VisitorUtils#connectActions(ResourceDemandingBehaviour)} themselves,
+	 * because they differ in when that has to happen.
+	 *
+	 * @param rdBehavior the behaviour to complete.
+	 */
+	protected static void ensureStartAndStopAction(final ResourceDemandingBehaviour rdBehavior) {
 		final EList<AbstractAction> steps = rdBehavior.getSteps_Behaviour();
 		final boolean addStartAction = 0 == steps.size() || !(steps.get(0) instanceof StartAction);
 		final boolean addStopAction = 0 == steps.size() || !(steps.get(steps.size() - 1) instanceof StopAction);
 
 		if (addStartAction) {
-			rdBehavior.getSteps_Behaviour().add(0, SeffFactory.eINSTANCE.createStartAction());
+			steps.add(0, SeffFactory.eINSTANCE.createStartAction());
 		}
 		if (addStopAction) {
-			final AbstractAction stopAction = SeffFactory.eINSTANCE.createStopAction();
-			rdBehavior.getSteps_Behaviour().add(stopAction);
+			steps.add(SeffFactory.eINSTANCE.createStopAction());
 		}
+	}
+
+	private void connectCreatedResourceDemandingBehaviour(final ResourceDemandingBehaviour rdBehavior) {
+		ensureStartAndStopAction(rdBehavior);
 		VisitorUtils.connectActions(rdBehavior);
 	}
 
