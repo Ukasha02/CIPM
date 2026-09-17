@@ -42,8 +42,6 @@ import tools.vitruv.change.interaction.UserInteractor;
 public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedClassMethodBodyChangedTransformation {
 	private static final Logger LOGGER = Logger
 			.getLogger(FineGrainedClassMethodBodyChangedTransformation.class.getSimpleName());
-	private final Method newMethod;
-	private final BasicComponentFinding basicComponentFinder;
 	private ResourceDemandingBehaviourDiff rdbDifference;
 	private final SimilarityChecker similarityChecker;
 
@@ -54,8 +52,6 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 			final ResourceDemandingBehaviourForClassMethodFinding resourceDemandingBehaviourForClassMethodFinding) {
 		super(newMethod, basicComponentFinder, iFunctionClassificationStrategy, interfaceOfExternalCallFindingFactory,
 				resourceDemandingBehaviourForClassMethodFinding);
-		this.newMethod = newMethod;
-		this.basicComponentFinder = basicComponentFinder;
 		this.similarityChecker = new SimilarityChecker();
 	}
 

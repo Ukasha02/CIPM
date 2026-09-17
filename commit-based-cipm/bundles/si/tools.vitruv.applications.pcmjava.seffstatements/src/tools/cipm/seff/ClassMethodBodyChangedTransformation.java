@@ -43,8 +43,8 @@ public class ClassMethodBodyChangedTransformation {
 
 	private static final Logger LOGGER = Logger.getLogger(ClassMethodBodyChangedTransformation.class.getSimpleName());
 
-	private final Method newMethod;
-	private final BasicComponentFinding basicComponentFinder;
+	protected final Method newMethod;
+	protected final BasicComponentFinding basicComponentFinder;
 	private final IFunctionClassificationStrategy iFunctionClassificationStrategy;
 
 	private final InterfaceOfExternalCallFindingFactory interfaceOfExternalCallFinderFactory;
