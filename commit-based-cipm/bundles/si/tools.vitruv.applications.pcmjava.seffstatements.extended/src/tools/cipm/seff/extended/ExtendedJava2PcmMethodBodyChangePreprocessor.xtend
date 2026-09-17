@@ -27,10 +27,10 @@ class ExtendedJava2PcmMethodBodyChangePreprocessor extends Java2PcmMethodBodyCha
 
 	protected override ClassMethodBodyChangedTransformation createTransformation(Method newMethod,
 		BasicComponentFinding basicComponentFinding, AbstractFunctionClassificationStrategy classification,
-		InterfaceOfExternalCallFindingFactory interfaceOfExternalCallFinderFactory,
+		InterfaceOfExternalCallFindingFactory interfaceOfExternalCallFindingFactory,
 		ResourceDemandingBehaviourForClassMethodFinding resourceDemandingBehaviourForClassMethodFinding) {
 		return new ExtendedClassMethodBodyChangedTransformation(newMethod, basicComponentFinding,
-			classification, interfaceOfExternalCallFinderFactory, resourceDemandingBehaviourForClassMethodFinding,
+			classification, interfaceOfExternalCallFindingFactory, resourceDemandingBehaviourForClassMethodFinding,
 			this.shouldGenerateInternalCallActions);
 	}
 }

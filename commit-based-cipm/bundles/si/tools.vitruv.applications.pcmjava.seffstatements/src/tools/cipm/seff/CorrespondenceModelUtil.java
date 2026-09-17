@@ -11,13 +11,13 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 public final class CorrespondenceModelUtil {
 	private CorrespondenceModelUtil() {}
 	
-	public static <TCorrespondingType> List<TCorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
-			EObject object, Class<TCorrespondingType> type) {
+	public static <CorrespondingType> List<CorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
+			EObject object, Class<CorrespondingType> type) {
 		return getCorrespondingEObjects(correspondenceModel, List.of(object), type);
 	}
 
-	public static <TCorrespondingType> List<TCorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
-			List<EObject> objects, Class<TCorrespondingType> type) {
+	public static <CorrespondingType> List<CorrespondingType> getCorrespondingEObjects(EditableCorrespondenceModelView<Correspondence> correspondenceModel,
+			List<EObject> objects, Class<CorrespondingType> type) {
 		return correspondenceModel.getCorrespondingEObjects(objects).parallelStream().flatMap(list -> list.parallelStream())
 			.filter(obj -> type.isInstance(obj)).map(obj -> type.cast(obj)).collect(Collectors.toList());
 	}

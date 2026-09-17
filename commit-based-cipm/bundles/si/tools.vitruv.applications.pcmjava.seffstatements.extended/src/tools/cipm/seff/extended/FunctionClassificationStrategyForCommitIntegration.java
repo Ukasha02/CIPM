@@ -24,8 +24,8 @@ public class FunctionClassificationStrategyForCommitIntegration
 	private final List<String> restClientApiPackages;
 
 	public FunctionClassificationStrategyForCommitIntegration(BasicComponentFinding basicComponentFinding,
-			EditableCorrespondenceModelView<Correspondence> ci, BasicComponent myBasicComponent) {
-		super(basicComponentFinding, ci, myBasicComponent);
+			EditableCorrespondenceModelView<Correspondence> correspondenceModel, BasicComponent basicComponent) {
+		super(basicComponentFinding, correspondenceModel, basicComponent);
 		this.restClientApiPackages = readRestClientApiPackages();
 	}
 

@@ -11,9 +11,9 @@ import tools.cipm.seff.extended.ExtendedJava2PcmMethodBodyChangePreprocessor
 class FineGrainedJava2PcmMethodBodyChangePreprocessor extends ExtendedJava2PcmMethodBodyChangePreprocessor {
 	protected override ClassMethodBodyChangedTransformation createTransformation(Method newMethod,
 		BasicComponentFinding basicComponentFinding, AbstractFunctionClassificationStrategy classification,
-		InterfaceOfExternalCallFindingFactory interfaceOfExternalCallFinderFactory,
+		InterfaceOfExternalCallFindingFactory interfaceOfExternalCallFindingFactory,
 		ResourceDemandingBehaviourForClassMethodFinding resourceDemandingBehaviourForClassMethodFinding) {
 		return new FineGrainedClassMethodBodyChangedTransformation(newMethod, basicComponentFinding,
-			classification, interfaceOfExternalCallFinderFactory, resourceDemandingBehaviourForClassMethodFinding)
+			classification, interfaceOfExternalCallFindingFactory, resourceDemandingBehaviourForClassMethodFinding)
 	}
 }

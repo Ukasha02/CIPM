@@ -95,7 +95,7 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 	}
 
 	private void calculateResourceDemandingBehaviourDiff(ResourceDemandingBehaviour oldSEFF,
-			ResourceDemandingBehaviour newSEFF, EditableCorrespondenceModelView<Correspondence> ci) {
+			ResourceDemandingBehaviour newSEFF, EditableCorrespondenceModelView<Correspondence> correspondenceModel) {
 		rdbDifference = new ResourceDemandingBehaviourDiff();
 
 		List<AbstractAction> listOldAbstractActions = this.getRelevantAbstractActions(oldSEFF);
@@ -108,7 +108,7 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 		}
 
 		// Find modified AbstractActions.
-		this.matchNewAndOldSeff(oldSEFF, newSEFF, ci);
+		this.matchNewAndOldSeff(oldSEFF, newSEFF, correspondenceModel);
 
 		// Find deleted AbstractActions.
 		for (AbstractAction oldAbstractAction : listOldAbstractActions) {
@@ -127,16 +127,16 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 
 	private List<AbstractAction> getRelevantAbstractActions(ResourceDemandingBehaviour seff) {
 		List<AbstractAction> listAbstractActions = new ArrayList<>();
-		for (AbstractAction aa : seff.getSteps_Behaviour()) {
-			if (!(aa instanceof StartAction || aa instanceof StopAction)) {
-				listAbstractActions.add(aa);
+		for (AbstractAction action : seff.getSteps_Behaviour()) {
+			if (!(action instanceof StartAction || action instanceof StopAction)) {
+				listAbstractActions.add(action);
 			}
 		}
 		return listAbstractActions;
 	}
 
 	private void matchNewAndOldSeff(ResourceDemandingBehaviour oldSEFF, ResourceDemandingBehaviour newSEFF,
-			EditableCorrespondenceModelView<Correspondence> ci) {
+			EditableCorrespondenceModelView<Correspondence> correspondenceModel) {
 
 		List<AbstractAction> oldAbstractActions = this.getRelevantAbstractActions(oldSEFF);
 		Map<AbstractAction, List<Statement>> newSeffStatements = this.getNewSeffElementStatements(newSEFF);
@@ -147,8 +147,8 @@ public class FineGrainedClassMethodBodyChangedTransformation extends ExtendedCla
 
 			for (AbstractAction oldAbstractAction : oldAbstractActions) {
 				// Get corresponding statements for old AbstractAction.
-				List<Statement> oldAbstractActionStatements = CorrespondenceModelUtil.getCorrespondingEObjects(ci,
-						oldAbstractAction, Statement.class);
+				List<Statement> oldAbstractActionStatements = CorrespondenceModelUtil.getCorrespondingEObjects(
+						correspondenceModel, oldAbstractAction, Statement.class);
 
 				int similarStatementsCount = this.compareAbstractActions(newAbstractAction, oldAbstractAction,
 						newAbstractActionStatements, oldAbstractActionStatements);
