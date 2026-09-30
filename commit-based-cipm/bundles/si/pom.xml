@@ -25,6 +25,7 @@
 		<module>tools.vitruv.applications.pcmjava.seffstatements.extended</module>
 		<module>tools.vitruv.applications.pcmjava.seffstatements.finegrained</module>
 		<module>tools.vitruv.applications.pcmjava.seffstatements.pojotransformations</module>
+		<module>tools.vitruv.applications.pcmjava.seffstatements.tests</module>
 		<module>cipm.consistency.cpr.util</module>
 	</modules>
 

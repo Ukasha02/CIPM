@@ -29,6 +29,7 @@
 			<unit id="org.junit.jupiter.api" version="0.0.0"/>
 			<unit id="org.junit.jupiter.params" version="0.0.0"/>
 			<unit id="org.junit.platform.commons" version="0.0.0"/>
+			<unit id="junit-platform-launcher" version="0.0.0"/>
 			<unit id="org.slf4j.binding.nop" version="0.0.0"/>
 			<unit id="org.apache.commons.lang" version="0.0.0"/>
 		</location>
