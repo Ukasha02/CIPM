@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Seffstatements Unit Tests
+Bundle-SymbolicName: tools.vitruv.applications.pcmjava.seffstatements.tests
+Bundle-Version: 0.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: tools.vitruv.applications.pcmjava.seffstatements,
+ tools.vitruv.applications.pcmjava.seffstatements.pojotransformations,
+ tools.vitruv.applications.pcmjava.seffstatements.extended,
+ tools.vitruv.applications.pcmjava.seffstatements.finegrained,
+ org.somox.gast2seff;bundle-version="1.0.0",
+ org.somox.sourcecodedecorator;bundle-version="1.0.1",
+ org.emftext.language.java,
+ org.palladiosimulator.pcm;bundle-version="4.0.0",
+ tools.vitruv.change.correspondence,
+ tools.vitruv.change.interaction,
+ tools.vitruv.change.atomic,
+ tools.vitruv.change.propagation,
+ org.eclipse.emf.ecore.change,
+ org.apache.log4j;bundle-version="1.2.15",
+ junit-jupiter-api;bundle-version="5.9.0",
+ junit-jupiter-engine;bundle-version="5.9.0",
+ junit-jupiter-params;bundle-version="5.9.0",
+ junit-platform-commons;bundle-version="1.9.0"
+Automatic-Module-Name: tools.vitruv.applications.pcmjava.seffstatements.tests
