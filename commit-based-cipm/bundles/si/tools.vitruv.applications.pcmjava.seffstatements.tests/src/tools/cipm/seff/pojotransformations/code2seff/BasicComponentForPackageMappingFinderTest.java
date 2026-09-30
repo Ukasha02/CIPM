@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.emftext.language.java.classifiers.Class;
 import org.emftext.language.java.classifiers.ClassifiersFactory;
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import tools.cipm.seff.testutil.CorrespondenceModelViews;
+import tools.cipm.seff.testutil.JavaResourceRegistration;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
@@ -49,7 +49,7 @@ class BasicComponentForPackageMappingFinderTest {
 	 */
 	@BeforeAll
 	static void registerJavaResourceFactoryGlobally() {
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java", new ResourceFactoryImpl());
+		JavaResourceRegistration.ensureJavaExtensionRegistered();
 	}
 
 	@Test
