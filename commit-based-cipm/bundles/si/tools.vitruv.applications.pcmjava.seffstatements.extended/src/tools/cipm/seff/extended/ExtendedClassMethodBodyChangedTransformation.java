@@ -66,7 +66,7 @@ public class ExtendedClassMethodBodyChangedTransformation extends ClassMethodBod
 	public void execute(final EditableCorrespondenceModelView<Correspondence> correspondenceModel,
 			final UserInteractor userInteractor) {
 		super.execute(correspondenceModel, userInteractor);
-		var decorator = super.getSourceCodeDecoratorRepository();
+		var decorator = this.getSourceCodeDecoratorRepository();
 		if (decorator != null) {
 			// 5) Link the abstract actions with their corresponding statements.
 			this.bindAbstractActionsAndStatements(decorator, correspondenceModel);
