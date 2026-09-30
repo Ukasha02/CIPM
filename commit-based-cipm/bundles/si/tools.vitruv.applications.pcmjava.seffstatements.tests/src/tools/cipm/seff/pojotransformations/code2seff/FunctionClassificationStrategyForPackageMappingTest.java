@@ -17,6 +17,7 @@ import org.palladiosimulator.pcm.repository.RepositoryFactory;
 
 import tools.cipm.seff.BasicComponentFinding;
 import tools.cipm.seff.testutil.CorrespondenceModelViews;
+import tools.cipm.seff.testutil.TestModelObjects;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
@@ -47,12 +48,6 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		}
 	}
 
-	private static BasicComponent componentWithId(String id) {
-		BasicComponent component = RepositoryFactory.eINSTANCE.createBasicComponent();
-		component.setId(id);
-		return component;
-	}
-
 	// ---- isExternalCall ----
 
 	@Test
@@ -65,7 +60,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		BasicComponentFinding unusedFinder = (m, correspondenceModel) -> {
 			throw new AssertionError("should not be called when a signature correspondence already matched");
 		};
-		ExposedStrategy strategy = new ExposedStrategy(unusedFinder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(unusedFinder, view, TestModelObjects.ownComponent());
 
 		assertTrue(strategy.callIsExternalCall(method));
 	}
@@ -74,9 +69,9 @@ class FunctionClassificationStrategyForPackageMappingTest {
 	void methodBelongsToADifferentComponent_isExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponent otherComponent = componentWithId("other-component");
+		BasicComponent otherComponent = TestModelObjects.otherComponent();
 		BasicComponentFinding finder = (m, correspondenceModel) -> otherComponent;
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertTrue(strategy.callIsExternalCall(method));
 	}
@@ -85,8 +80,8 @@ class FunctionClassificationStrategyForPackageMappingTest {
 	void methodBelongsToTheOwnComponent_isNotExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponentFinding finder = (m, correspondenceModel) -> componentWithId("own-component");
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		BasicComponentFinding finder = (m, correspondenceModel) -> TestModelObjects.ownComponent();
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertFalse(strategy.callIsExternalCall(method));
 	}
@@ -96,7 +91,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertFalse(strategy.callIsExternalCall(method));
 	}
@@ -109,7 +104,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		BasicComponentFinding unusedFinder = (m, correspondenceModel) -> {
 			throw new AssertionError("should not be called for a non-ClassMethod");
 		};
-		ExposedStrategy strategy = new ExposedStrategy(unusedFinder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(unusedFinder, view, TestModelObjects.ownComponent());
 
 		assertFalse(strategy.callIsExternalCall(method));
 	}
@@ -121,7 +116,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertTrue(strategy.callIsLibraryCall(method));
 	}
@@ -130,8 +125,8 @@ class FunctionClassificationStrategyForPackageMappingTest {
 	void methodBelongsToTheOwnComponent_isNotLibraryCall(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponentFinding finder = (m, correspondenceModel) -> componentWithId("own-component");
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		BasicComponentFinding finder = (m, correspondenceModel) -> TestModelObjects.ownComponent();
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertFalse(strategy.callIsLibraryCall(method));
 	}
@@ -144,9 +139,9 @@ class FunctionClassificationStrategyForPackageMappingTest {
 	void methodBelongsToADifferentComponent_isLibraryCallWithWarning(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponent otherComponent = componentWithId("other-component");
+		BasicComponent otherComponent = TestModelObjects.otherComponent();
 		BasicComponentFinding finder = (m, correspondenceModel) -> otherComponent;
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertTrue(strategy.callIsLibraryCall(method));
 	}

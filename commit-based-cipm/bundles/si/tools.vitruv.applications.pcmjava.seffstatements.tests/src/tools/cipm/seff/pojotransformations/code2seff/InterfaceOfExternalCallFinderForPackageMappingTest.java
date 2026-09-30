@@ -19,6 +19,7 @@ import org.palladiosimulator.pcm.seff.SeffFactory;
 import org.somox.gast2seff.visitors.InterfaceOfExternalCallFinding.InterfacePortOperationTuple;
 
 import tools.cipm.seff.testutil.CorrespondenceModelViews;
+import tools.cipm.seff.testutil.TestModelObjects;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
@@ -37,17 +38,14 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class InterfaceOfExternalCallFinderForPackageMappingTest {
 
-	private static OperationInterface interfaceWithId(String id) {
-		OperationInterface opInterface = RepositoryFactory.eINSTANCE.createOperationInterface();
-		opInterface.setId(id);
-		return opInterface;
-	}
+	/** Id of an interface that no component in these tests ever declares it requires. */
+	private static final String INTERFACE_NOBODY_REQUIRES = "interface-nobody-requires";
 
 	@Test
 	void methodCorrespondsToASignatureWithAMatchingRequiredRole_bothFieldsPopulated(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		OperationInterface opInterface = interfaceWithId("shared-interface");
+		OperationInterface opInterface = TestModelObjects.interfaceWithId("shared-interface");
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
 		signature.setInterface__OperationSignature(opInterface);
 		view.addCorrespondenceBetween(method, signature, null);
@@ -76,7 +74,7 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
-		signature.setInterface__OperationSignature(interfaceWithId("interface-nobody-requires"));
+		signature.setInterface__OperationSignature(TestModelObjects.interfaceWithId(INTERFACE_NOBODY_REQUIRES));
 		view.addCorrespondenceBetween(method, signature, null);
 
 		// The component requires no interfaces at all - deliberately no matching role possible.
@@ -119,7 +117,7 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
-		signature.setInterface__OperationSignature(interfaceWithId("interface-nobody-requires"));
+		signature.setInterface__OperationSignature(TestModelObjects.interfaceWithId(INTERFACE_NOBODY_REQUIRES));
 		ResourceDemandingSEFF seff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		seff.setDescribedService__SEFF(signature);
 		view.addCorrespondenceBetween(method, seff, null);

@@ -22,6 +22,7 @@ import org.palladiosimulator.pcm.repository.RepositoryFactory;
 
 import tools.cipm.seff.BasicComponentFinding;
 import tools.cipm.seff.testutil.CorrespondenceModelViews;
+import tools.cipm.seff.testutil.TestModelObjects;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
@@ -68,7 +69,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 		BasicComponentFinding unusedFinder = (m, correspondenceModel) -> {
 			throw new AssertionError("super.isExternalCall already returned true; the REST-package check must not run");
 		};
-		ExposedStrategy strategy = new ExposedStrategy(unusedFinder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(unusedFinder, view, TestModelObjects.ownComponent());
 
 		assertTrue(strategy.callIsExternalCall(method));
 	}
@@ -78,7 +79,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = methodInPackage(List.of());
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertFalse(strategy.callIsExternalCall(method));
 	}
@@ -88,7 +89,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod method = methodInPackage(List.of("com", "example"));
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertFalse(strategy.callIsExternalCall(method));
 	}
@@ -104,14 +105,8 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		ClassMethod detachedMethod = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
-		ExposedStrategy strategy = new ExposedStrategy(finder, view, componentWithId("own-component"));
+		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
 
 		assertThrows(NullPointerException.class, () -> strategy.callIsExternalCall(detachedMethod));
-	}
-
-	private static BasicComponent componentWithId(String id) {
-		BasicComponent component = RepositoryFactory.eINSTANCE.createBasicComponent();
-		component.setId(id);
-		return component;
 	}
 }
