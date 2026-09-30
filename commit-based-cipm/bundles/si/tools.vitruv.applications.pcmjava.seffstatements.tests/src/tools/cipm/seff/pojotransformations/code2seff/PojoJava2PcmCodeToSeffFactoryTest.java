@@ -11,10 +11,10 @@ import org.palladiosimulator.pcm.repository.RepositoryFactory;
 import org.somox.gast2seff.visitors.InterfaceOfExternalCallFinding;
 import org.somox.gast2seff.visitors.InterfaceOfExternalCallFindingFactory;
 import org.somox.sourcecodedecorator.SourceCodeDecoratorRepository;
-import org.somox.sourcecodedecorator.SourcecodedecoratorFactory;
 
 import tools.cipm.seff.BasicComponentFinding;
 import tools.cipm.seff.testutil.CorrespondenceModelViews;
+import tools.cipm.seff.testutil.TestModelObjects;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
@@ -37,8 +37,8 @@ class PojoJava2PcmCodeToSeffFactoryTest {
 	void createInterfaceOfExternalCallFindingFactory_producesAPackageMappingFinder(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
 		BasicComponent basicComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
-		SourceCodeDecoratorRepository sourceCodeDecoratorRepository = SourcecodedecoratorFactory.eINSTANCE
-				.createSourceCodeDecoratorRepository();
+		SourceCodeDecoratorRepository sourceCodeDecoratorRepository = TestModelObjects
+				.newSourceCodeDecoratorRepository();
 
 		InterfaceOfExternalCallFindingFactory findingFactory = factory
 				.createInterfaceOfExternalCallFindingFactory(view, basicComponent);

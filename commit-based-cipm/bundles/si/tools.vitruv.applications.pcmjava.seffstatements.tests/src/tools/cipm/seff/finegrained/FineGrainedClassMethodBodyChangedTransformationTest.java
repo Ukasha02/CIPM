@@ -32,6 +32,7 @@ import org.somox.sourcecodedecorator.SourcecodedecoratorFactory;
 
 import tools.cipm.seff.BasicComponentFinding;
 import tools.cipm.seff.testutil.CorrespondenceModelViews;
+import tools.cipm.seff.testutil.TestModelObjects;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
@@ -92,8 +93,7 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 		view.addCorrespondenceBetween(method, oldSeff, null);
 
 		InternalCallAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
-		SourceCodeDecoratorRepository emptyRepository = SourcecodedecoratorFactory.eINSTANCE
-				.createSourceCodeDecoratorRepository();
+		SourceCodeDecoratorRepository emptyRepository = TestModelObjects.newSourceCodeDecoratorRepository();
 
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
 		SoMoXFreeTransformation transformation = new SoMoXFreeTransformation(method, finder, null, null, null,
@@ -133,8 +133,7 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 		view.addCorrespondenceBetween(oldAction, sharedStatement, null);
 
 		InternalCallAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
-		SourceCodeDecoratorRepository fixtureRepository = SourcecodedecoratorFactory.eINSTANCE
-				.createSourceCodeDecoratorRepository();
+		SourceCodeDecoratorRepository fixtureRepository = TestModelObjects.newSourceCodeDecoratorRepository();
 		SeffElementSourceCodeLink link = SourcecodedecoratorFactory.eINSTANCE.createSeffElementSourceCodeLink();
 		link.setSeffElement(newAction);
 		link.getStatement().add(sharedStatement);
@@ -193,8 +192,7 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 
 		// The action under investigation: SoMoX produced it, but linked it to zero statements.
 		InternalCallAction newActionWithNoStatements = SeffFactory.eINSTANCE.createInternalCallAction();
-		SourceCodeDecoratorRepository fixtureRepository = SourcecodedecoratorFactory.eINSTANCE
-				.createSourceCodeDecoratorRepository();
+		SourceCodeDecoratorRepository fixtureRepository = TestModelObjects.newSourceCodeDecoratorRepository();
 		SeffElementSourceCodeLink link = SourcecodedecoratorFactory.eINSTANCE.createSeffElementSourceCodeLink();
 		link.setSeffElement(newActionWithNoStatements);
 		// link.getStatement() deliberately left empty - this is the scenario under test.

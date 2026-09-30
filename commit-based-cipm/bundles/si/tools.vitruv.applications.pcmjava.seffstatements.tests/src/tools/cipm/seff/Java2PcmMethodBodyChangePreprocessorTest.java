@@ -29,14 +29,20 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 	/** The correspondenceModel parameter is never read by doesHandleChange; null stands in for "don't care". */
 	private static final EditableCorrespondenceModelView<Correspondence> UNUSED_CORRESPONDENCE_MODEL = null;
 
+	/** The method's name before the rename, used by the three rename-related test cases below. */
+	private static final String OLD_NAME = "oldName";
+
+	/** The method's new name in the one case where the rename is actually handled. */
+	private static final String NEW_NAME = "newName";
+
 	private final Java2PcmMethodBodyChangePreprocessor preprocessor = new Java2PcmMethodBodyChangePreprocessor(null);
 
 	@Test
 	void methodRenamedToNonEmptyName_isHandled() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		ReplaceSingleValuedEAttribute<ClassMethod, String> change = TypeInferringAtomicEChangeFactory.getInstance()
-				.createReplaceSingleAttributeChange(method, CommonsPackage.Literals.NAMED_ELEMENT__NAME, "oldName",
-						"newName");
+				.createReplaceSingleAttributeChange(method, CommonsPackage.Literals.NAMED_ELEMENT__NAME, OLD_NAME,
+						NEW_NAME);
 
 		assertTrue(preprocessor.doesHandleChange(change, UNUSED_CORRESPONDENCE_MODEL));
 	}
@@ -45,7 +51,7 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 	void methodRenamedToEmptyName_isNotHandled() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		ReplaceSingleValuedEAttribute<ClassMethod, String> change = TypeInferringAtomicEChangeFactory.getInstance()
-				.createReplaceSingleAttributeChange(method, CommonsPackage.Literals.NAMED_ELEMENT__NAME, "oldName",
+				.createReplaceSingleAttributeChange(method, CommonsPackage.Literals.NAMED_ELEMENT__NAME, OLD_NAME,
 						"");
 
 		assertFalse(preprocessor.doesHandleChange(change, UNUSED_CORRESPONDENCE_MODEL));
@@ -55,8 +61,8 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 	void nonMethodElementRenamed_isNotHandled() {
 		Field field = MembersFactory.eINSTANCE.createField();
 		ReplaceSingleValuedEAttribute<Field, String> change = TypeInferringAtomicEChangeFactory.getInstance()
-				.createReplaceSingleAttributeChange(field, CommonsPackage.Literals.NAMED_ELEMENT__NAME, "oldName",
-						"newName");
+				.createReplaceSingleAttributeChange(field, CommonsPackage.Literals.NAMED_ELEMENT__NAME, OLD_NAME,
+						NEW_NAME);
 
 		assertFalse(preprocessor.doesHandleChange(change, UNUSED_CORRESPONDENCE_MODEL));
 	}

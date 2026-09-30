@@ -33,6 +33,7 @@ import de.uka.ipd.sdq.identifier.Identifier;
 import tools.cipm.seff.BasicComponentFinding;
 import tools.cipm.seff.CorrespondenceModelUtil;
 import tools.cipm.seff.testutil.CorrespondenceModelViews;
+import tools.cipm.seff.testutil.TestModelObjects;
 import tools.vitruv.change.correspondence.Correspondence;
 import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
@@ -92,7 +93,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 	}
 
 	private static SourceCodeDecoratorRepository newRepository() {
-		return SourcecodedecoratorFactory.eINSTANCE.createSourceCodeDecoratorRepository();
+		return TestModelObjects.newSourceCodeDecoratorRepository();
 	}
 
 	/** Registers a method -> empty SEFF correspondence so execute() treats the change as relevant. */
