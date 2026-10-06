@@ -40,6 +40,7 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class ClassMethodBodyChangedTransformationTest {
 
+	/** An empty behaviour gets both a StartAction and a StopAction added, since neither exists yet. */
 	@Test
 	void emptyBehaviour_getsBothStartAndStopActionAdded() {
 		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
@@ -52,6 +53,7 @@ class ClassMethodBodyChangedTransformationTest {
 		assertTrue(steps.get(1) instanceof StopAction);
 	}
 
+	/** A behaviour that already has a StartAction only gets a StopAction appended; the existing StartAction is left in place. */
 	@Test
 	void behaviourWithOnlyAStartAction_getsAStopActionAppended() {
 		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
@@ -66,6 +68,7 @@ class ClassMethodBodyChangedTransformationTest {
 		assertTrue(steps.get(1) instanceof StopAction);
 	}
 
+	/** A behaviour that already has a StopAction only gets a StartAction prepended; the existing StopAction is left in place. */
 	@Test
 	void behaviourWithOnlyAStopAction_getsAStartActionPrepended() {
 		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
@@ -80,6 +83,7 @@ class ClassMethodBodyChangedTransformationTest {
 		assertSame(existingStop, steps.get(1));
 	}
 
+	/** A behaviour that already has both bookends correctly positioned is left completely unchanged. */
 	@Test
 	void behaviourWithBothCorrectlyPositioned_isLeftUnchanged() {
 		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
@@ -154,7 +158,7 @@ class ClassMethodBodyChangedTransformationTest {
 	 * independent of whatever is actually registered on the correspondence board. Needed
 	 * because in real usage this and isArchitectureRelevantChange() query the same
 	 * correspondence, so naturally provoking "relevant, but nothing to insert into" isn't
-	 * practically possible - this tests the null-guard (commit B1) in isolation instead.
+	 * practically possible - this tests that defensive null-guard in isolation instead.
 	 */
 	private static class ForcedNullRdBehaviour extends SoMoXFreeTransformation {
 		ForcedNullRdBehaviour(Method newMethod, BasicComponentFinding basicComponentFinder,
@@ -173,7 +177,7 @@ class ClassMethodBodyChangedTransformationTest {
 	}
 
 	/**
-	 * Commit B1's defensive null-guard. This branch never fires in the real TEAMMATES run -
+	 * A defensive null-guard: this branch never fires in the real TEAMMATES run -
 	 * this is the first time it's ever been exercised by any test.
 	 */
 	@Test

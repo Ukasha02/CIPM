@@ -31,13 +31,14 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  * limits on what's black-box testable here: readRestClientApiPackages() reads a process-wide
  * settings singleton that doesn't exist in a bare test, so the "package IS configured as a
  * REST client API" branch can never actually fire through the public constructor (it safely
- * defaults to an empty list, per commit A5's guard) - not attempted. And this method calls
+ * defaults to an empty list, guarded against the missing singleton) - not attempted. And this method calls
  * method.getContainingCompilationUnit().getNamespacesAsString() with no null-check, unlike its
  * sibling classes elsewhere in this codebase that do guard the same kind of lookup - a real
  * latent NullPointerException risk, characterized below rather than worked around.
  */
 class FunctionClassificationStrategyForCommitIntegrationTest {
 
+	/** Exposes the protected isExternalCall under test as public, changing nothing else. */
 	private static class ExposedStrategy extends FunctionClassificationStrategyForCommitIntegration {
 		ExposedStrategy(BasicComponentFinding basicComponentFinding,
 				EditableCorrespondenceModelView<Correspondence> correspondenceModel, BasicComponent basicComponent) {
@@ -60,6 +61,10 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 		return method;
 	}
 
+	/**
+	 * When the base class's own check already classifies the call as external (via a signature
+	 * correspondence), the REST-package check is never even consulted.
+	 */
 	@Test
 	void superClassifiesTheCallAsExternal_isExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -74,6 +79,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 		assertTrue(strategy.callIsExternalCall(method));
 	}
 
+	/** A method with no package namespace at all is not external. */
 	@Test
 	void methodHasNoNamespace_isNotExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -84,6 +90,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 		assertFalse(strategy.callIsExternalCall(method));
 	}
 
+	/** A method whose package isn't configured as a REST client API is not external. */
 	@Test
 	void methodsPackageIsNotAConfiguredRestClientPackage_isNotExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

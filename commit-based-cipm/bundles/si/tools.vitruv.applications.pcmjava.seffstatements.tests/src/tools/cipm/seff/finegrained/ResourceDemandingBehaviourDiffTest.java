@@ -13,7 +13,7 @@ import org.palladiosimulator.pcm.seff.SeffFactory;
 /**
  * Tests {@link ResourceDemandingBehaviourDiff}: the four action buckets it exposes (deleted,
  * added, modified, unmodified) and the shared findMatching lookup that hasOldAbstractActionMatching
- * / hasNewAbstractActionMatching / getNewAbstractActionMatching all delegate to (commit A4).
+ * / hasNewAbstractActionMatching / getNewAbstractActionMatching all delegate to.
  * No correspondence model or SoMoX involved - AbstractAction instances are compared by
  * identity throughout, so plain PCM objects are enough.
  */
@@ -21,6 +21,7 @@ class ResourceDemandingBehaviourDiffTest {
 
 	private final ResourceDemandingBehaviourDiff diff = new ResourceDemandingBehaviourDiff();
 
+	/** An action added as deleted shows up in the deleted bucket. */
 	@Test
 	void addDeletedAbstractAction_appearsInDeletedBucket() {
 		AbstractAction deleted = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -30,6 +31,7 @@ class ResourceDemandingBehaviourDiffTest {
 		assertTrue(diff.getDeletedAbstractActions().contains(deleted));
 	}
 
+	/** An action added as added shows up in the added bucket. */
 	@Test
 	void addAddedAbstractAction_appearsInAddedBucket() {
 		AbstractAction added = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -39,6 +41,7 @@ class ResourceDemandingBehaviourDiffTest {
 		assertTrue(diff.getAddedAbstractActions().contains(added));
 	}
 
+	/** Adding several actions at once as added puts all of them in the added bucket. */
 	@Test
 	void addAddedAbstractActions_bulk_appearAllInAddedBucket() {
 		AbstractAction first = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -50,6 +53,10 @@ class ResourceDemandingBehaviourDiffTest {
 		assertTrue(diff.getAddedAbstractActions().contains(second));
 	}
 
+	/**
+	 * isModified is true only for the exact matching instance that was added, not for a
+	 * different matching instance over the same pair of actions.
+	 */
 	@Test
 	void isModified_trueOnlyForTheExactMatchingInstanceAddedAsModified() {
 		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -66,6 +73,7 @@ class ResourceDemandingBehaviourDiffTest {
 		assertFalse(diff.isModified(lookalikeMatching));
 	}
 
+	/** True once a matching referencing that old action has been added, regardless of which bucket it was added to. */
 	@Test
 	void hasOldAbstractActionMatching_trueWhenAMatchingReferencesThatOldAction() {
 		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -75,6 +83,7 @@ class ResourceDemandingBehaviourDiffTest {
 		assertTrue(diff.hasOldAbstractActionMatching(oldAction));
 	}
 
+	/** False when no matching anywhere references that old action. */
 	@Test
 	void hasOldAbstractActionMatching_falseWhenNoMatchingReferencesIt() {
 		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -82,6 +91,7 @@ class ResourceDemandingBehaviourDiffTest {
 		assertFalse(diff.hasOldAbstractActionMatching(oldAction));
 	}
 
+	/** True once a matching referencing that new action has been added. */
 	@Test
 	void hasNewAbstractActionMatching_trueWhenAMatchingReferencesThatNewAction() {
 		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -91,6 +101,7 @@ class ResourceDemandingBehaviourDiffTest {
 		assertTrue(diff.hasNewAbstractActionMatching(newAction));
 	}
 
+	/** False when no matching anywhere references that new action. */
 	@Test
 	void hasNewAbstractActionMatching_falseWhenNoMatchingReferencesIt() {
 		AbstractAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -98,6 +109,7 @@ class ResourceDemandingBehaviourDiffTest {
 		assertFalse(diff.hasNewAbstractActionMatching(newAction));
 	}
 
+	/** Returns the exact matching instance that contains the given new action. */
 	@Test
 	void getNewAbstractActionMatching_returnsTheMatchingContainingThatNewAction() {
 		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -109,8 +121,8 @@ class ResourceDemandingBehaviourDiffTest {
 	}
 
 	/**
-	 * Characterizes the shared findMatching helper's search order (commit A4 collapsed three
-	 * near-identical loops into this one method): the modified bucket is searched before the
+	 * Characterizes the shared findMatching helper's search order (this one method replaced
+	 * three near-identical lookup loops): the modified bucket is searched before the
 	 * unmodified bucket, regardless of which matching was actually added first. If this ever
 	 * flips, this test documents that it changed, on purpose or otherwise.
 	 */

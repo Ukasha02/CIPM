@@ -24,11 +24,12 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  * (Vitruv's own CorrespondenceModelFactory / CorrespondenceModelViewFactory) rather than a
  * fake - this dependency has real behaviour worth exercising (getCorrespondingEObjects uses
  * parallelStream internally), and building one is cheap. Only the default (null) tag is used
- * throughout - the "" vs null tag question is still open with the supervisor and out of scope
+ * throughout - the "" vs null tag question is still an open design question and out of scope
  * here.
  */
 class CorrespondenceModelUtilTest {
 
+	/** Returns the one corresponding object whose type matches what was asked for. */
 	@Test
 	void getCorrespondingEObjects_returnsTheCorrespondingObjectOfTheRequestedType(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -42,6 +43,7 @@ class CorrespondenceModelUtilTest {
 		assertTrue(result.contains(component));
 	}
 
+	/** A second correspondence of a different, unrequested type on the same object is ignored. */
 	@Test
 	void getCorrespondingEObjects_ignoresCorrespondencesOfAnUnrequestedType(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -57,6 +59,7 @@ class CorrespondenceModelUtilTest {
 		assertTrue(result.contains(component));
 	}
 
+	/** An object with no correspondences at all returns an empty list, not null. */
 	@Test
 	void getCorrespondingEObjects_noCorrespondences_returnsEmptyList(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -68,6 +71,7 @@ class CorrespondenceModelUtilTest {
 		assertTrue(result.isEmpty());
 	}
 
+	/** After removal, the object has no correspondences left and a follow-up lookup finds nothing. */
 	@Test
 	void removeCorrespondencesFor_removesAllCorrespondencesOfThatObject(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

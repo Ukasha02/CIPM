@@ -27,6 +27,7 @@ class BasicComponentForCommitIntegrationFinderTest {
 
 	private final BasicComponentForCommitIntegrationFinder finder = new BasicComponentForCommitIntegrationFinder();
 
+	/** When the method's containing class corresponds to a component, that component is returned. */
 	@Test
 	void methodsContainingClassCorrespondsToAComponent_returnsThatComponent(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -39,6 +40,7 @@ class BasicComponentForCommitIntegrationFinderTest {
 		assertSame(component, finder.findBasicComponentForMethod(method, view));
 	}
 
+	/** When the containing class has no corresponding component, the lookup returns null. */
 	@Test
 	void noCorrespondenceForTheContainingClass_returnsNull(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

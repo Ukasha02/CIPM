@@ -26,6 +26,7 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class ResourceDemandingBehaviourForClassMethodFinderForPackageMappingTest {
 
+	/** A method with no corresponding SEFF returns null. */
 	@Test
 	void getCorrespondingRDSEFForClassMethod_noCorrespondence_returnsNull(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -35,6 +36,7 @@ class ResourceDemandingBehaviourForClassMethodFinderForPackageMappingTest {
 		assertNull(finder.getCorrespondingRDSEFForClassMethod(method));
 	}
 
+	/** A method with exactly one corresponding SEFF returns it. */
 	@Test
 	void getCorrespondingRDSEFForClassMethod_oneCorresponds_returnsIt(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -65,6 +67,7 @@ class ResourceDemandingBehaviourForClassMethodFinderForPackageMappingTest {
 		assertTrue(List.of(first, second).contains(finder.getCorrespondingRDSEFForClassMethod(method)));
 	}
 
+	/** A method with no corresponding internal behaviour returns null. */
 	@Test
 	void getCorrespondingResourceDemandingInternalBehaviour_noCorrespondence_returnsNull(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -74,6 +77,7 @@ class ResourceDemandingBehaviourForClassMethodFinderForPackageMappingTest {
 		assertNull(finder.getCorrespondingResourceDemandingInternalBehaviour(method));
 	}
 
+	/** A method with exactly one corresponding internal behaviour returns it. */
 	@Test
 	void getCorrespondingResourceDemandingInternalBehaviour_oneCorresponds_returnsIt(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

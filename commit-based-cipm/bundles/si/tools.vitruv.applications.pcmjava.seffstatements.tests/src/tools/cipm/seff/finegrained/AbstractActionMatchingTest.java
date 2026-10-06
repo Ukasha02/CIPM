@@ -8,10 +8,11 @@ import org.palladiosimulator.pcm.seff.SeffFactory;
 
 /**
  * Tests {@link AbstractActionMatching}: the constructor wires both actions through to their
- * getters, unchanged, for the immutable pair commit A1 established.
+ * getters, unchanged, for the immutable pair this class represents.
  */
 class AbstractActionMatchingTest {
 
+	/** The constructor's two arguments come back unchanged from their respective getters. */
 	@Test
 	void constructorArguments_areReturnedUnchangedByTheGetters() {
 		AbstractAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();

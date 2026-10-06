@@ -28,11 +28,13 @@ class PojoJava2PcmCodeToSeffFactoryTest {
 
 	private final PojoJava2PcmCodeToSeffFactory factory = new PojoJava2PcmCodeToSeffFactory();
 
+	/** Returns the package-mapping-specific component finder. */
 	@Test
 	void createBasicComponentFinding_returnsThePackageMappingFinder() {
 		assertInstanceOf(BasicComponentForPackageMappingFinder.class, factory.createBasicComponentFinding());
 	}
 
+	/** Returns a factory that itself produces the package-mapping-specific external-call finder. */
 	@Test
 	void createInterfaceOfExternalCallFindingFactory_producesAPackageMappingFinder(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -48,6 +50,7 @@ class PojoJava2PcmCodeToSeffFactoryTest {
 		assertInstanceOf(InterfaceOfExternalCallFinderForPackageMapping.class, finding);
 	}
 
+	/** Returns the package-mapping-specific behaviour finder. */
 	@Test
 	void createResourceDemandingBehaviourForClassMethodFinding_returnsThePackageMappingFinder(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -56,6 +59,7 @@ class PojoJava2PcmCodeToSeffFactoryTest {
 				factory.createResourceDemandingBehaviourForClassMethodFinding(view));
 	}
 
+	/** Returns the package-mapping-specific classification strategy. */
 	@Test
 	void createAbstractFunctionClassificationStrategy_returnsThePackageMappingStrategy(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

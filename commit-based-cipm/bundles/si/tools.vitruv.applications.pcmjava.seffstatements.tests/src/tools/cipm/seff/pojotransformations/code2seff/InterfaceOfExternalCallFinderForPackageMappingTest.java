@@ -25,8 +25,8 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 
 /**
  * Characterization tests for {@link InterfaceOfExternalCallFinderForPackageMapping}. This
- * class is explicitly off-limits for editing (supervisor: "leave the class as it is, for
- * now"), following the investigation into real TEAMMATES output where 57/507 ExternalCallActions
+ * class is intentionally left unedited here (kept exactly as it is for now, pending further
+ * review), following the investigation into real TEAMMATES output where 57/507 ExternalCallActions
  * came back with both fields missing. These tests exist to make that finding concrete and
  * reproducible - not to fix or improve the behaviour, only to record it precisely.
  *
@@ -41,6 +41,11 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 	/** Id of an interface that no component in these tests ever declares it requires. */
 	private static final String INTERFACE_NOBODY_REQUIRES = "interface-nobody-requires";
 
+	/**
+	 * The fully-successful case: a real signature correspondence exists and the component
+	 * genuinely requires that interface, so both fields come back populated. The baseline
+	 * every other case in this class is contrasted against.
+	 */
 	@Test
 	void methodCorrespondsToASignatureWithAMatchingRequiredRole_bothFieldsPopulated(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

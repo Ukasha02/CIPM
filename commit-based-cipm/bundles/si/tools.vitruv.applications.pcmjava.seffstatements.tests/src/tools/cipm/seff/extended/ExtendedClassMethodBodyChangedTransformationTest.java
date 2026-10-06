@@ -55,6 +55,10 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class ExtendedClassMethodBodyChangedTransformationTest {
 
+	/**
+	 * Skips the real SoMoX call, populating the new SEFF with the given actions instead, and
+	 * returns the given fixture repository in place of the one real SoMoX would have built.
+	 */
 	private static class SoMoXFreeTransformation extends ExtendedClassMethodBodyChangedTransformation {
 		private final List<AbstractAction> actionsFromSoMoX;
 		private final SourceCodeDecoratorRepository fixtureRepository;
@@ -83,6 +87,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 		}
 	}
 
+	/** Builds a SeffElementSourceCodeLink from the given SEFF element to the given statements and adds it to the repository. */
 	private static SeffElementSourceCodeLink link(SourceCodeDecoratorRepository repository, Identifier seffElement,
 			Statement... statements) {
 		SeffElementSourceCodeLink link = SourcecodedecoratorFactory.eINSTANCE.createSeffElementSourceCodeLink();
@@ -92,6 +97,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 		return link;
 	}
 
+	/** Creates a fresh, empty SourceCodeDecoratorRepository for a test to populate. */
 	private static SourceCodeDecoratorRepository newRepository() {
 		return TestModelObjects.newSourceCodeDecoratorRepository();
 	}
@@ -104,11 +110,13 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 		return method;
 	}
 
+	/** Returns the statements currently corresponded to the given action. */
 	private static List<Statement> statementsBoundTo(EditableCorrespondenceModelView<Correspondence> view,
 			AbstractAction action) {
 		return CorrespondenceModelUtil.getCorrespondingEObjects(view, action, Statement.class);
 	}
 
+	/** Runs the transformation under test with a finder that is never consulted (no test here needs it). */
 	private static void run(ClassMethod method, EditableCorrespondenceModelView<Correspondence> view,
 			List<AbstractAction> actionsFromSoMoX, SourceCodeDecoratorRepository repository) {
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;

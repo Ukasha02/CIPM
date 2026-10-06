@@ -37,6 +37,7 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 
 	private final Java2PcmMethodBodyChangePreprocessor preprocessor = new Java2PcmMethodBodyChangePreprocessor(null);
 
+	/** A method renamed to a non-empty name is handled. */
 	@Test
 	void methodRenamedToNonEmptyName_isHandled() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
@@ -47,6 +48,7 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 		assertTrue(preprocessor.doesHandleChange(change, UNUSED_CORRESPONDENCE_MODEL));
 	}
 
+	/** A method renamed to the empty string is not handled - the empty-name guard. */
 	@Test
 	void methodRenamedToEmptyName_isNotHandled() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
@@ -57,6 +59,7 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 		assertFalse(preprocessor.doesHandleChange(change, UNUSED_CORRESPONDENCE_MODEL));
 	}
 
+	/** The same kind of rename on a non-Method element (a Field here) is not handled. */
 	@Test
 	void nonMethodElementRenamed_isNotHandled() {
 		Field field = MembersFactory.eINSTANCE.createField();
@@ -67,6 +70,7 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 		assertFalse(preprocessor.doesHandleChange(change, UNUSED_CORRESPONDENCE_MODEL));
 	}
 
+	/** A change to a Method's attribute other than its name is not handled. */
 	@Test
 	void unrelatedAttributeOfMethodChanged_isNotHandled() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
@@ -77,6 +81,7 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 		assertFalse(preprocessor.doesHandleChange(change, UNUSED_CORRESPONDENCE_MODEL));
 	}
 
+	/** A completely different kind of EChange is not handled. */
 	@Test
 	void changeOfADifferentKind_isNotHandled() {
 		EChange change = AttributeFactory.eINSTANCE.createInsertEAttributeValue();

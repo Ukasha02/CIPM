@@ -50,6 +50,10 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	// ---- isExternalCall ----
 
+	/**
+	 * A method that corresponds to an OperationSignature is external - the signature
+	 * correspondence short-circuits before the component finder is ever consulted.
+	 */
 	@Test
 	void methodCorrespondsToAnOperationSignature_isExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -65,6 +69,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		assertTrue(strategy.callIsExternalCall(method));
 	}
 
+	/** A method whose own component differs from the strategy's component is external. */
 	@Test
 	void methodBelongsToADifferentComponent_isExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -76,6 +81,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		assertTrue(strategy.callIsExternalCall(method));
 	}
 
+	/** A method whose own component is the strategy's own component is not external. */
 	@Test
 	void methodBelongsToTheOwnComponent_isNotExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -86,6 +92,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		assertFalse(strategy.callIsExternalCall(method));
 	}
 
+	/** A method whose component cannot be found at all is not external. */
 	@Test
 	void methodsComponentCannotBeFound_isNotExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -96,6 +103,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		assertFalse(strategy.callIsExternalCall(method));
 	}
 
+	/** A method that isn't a ClassMethod is not external - the instanceof check fails before the finder is ever consulted. */
 	@Test
 	void methodIsNotAClassMethod_isNotExternal(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -111,6 +119,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	// ---- isLibraryCall ----
 
+	/** A method whose component cannot be found at all is classified as a library call. */
 	@Test
 	void methodsComponentCannotBeFound_isLibraryCall(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -121,6 +130,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 		assertTrue(strategy.callIsLibraryCall(method));
 	}
 
+	/** A method whose own component is the strategy's own component is not a library call. */
 	@Test
 	void methodBelongsToTheOwnComponent_isNotLibraryCall(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

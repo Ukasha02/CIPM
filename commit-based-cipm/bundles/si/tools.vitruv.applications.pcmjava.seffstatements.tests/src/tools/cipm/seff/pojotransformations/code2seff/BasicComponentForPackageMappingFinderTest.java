@@ -52,6 +52,7 @@ class BasicComponentForPackageMappingFinderTest {
 		JavaResourceRegistration.ensureJavaExtensionRegistered();
 	}
 
+	/** A detached method with no containing compilation unit returns null immediately. */
 	@Test
 	void methodHasNoContainingCompilationUnit_returnsNull(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -60,6 +61,10 @@ class BasicComponentForPackageMappingFinderTest {
 		assertNull(finder.findBasicComponentForMethod(detachedMethod, view));
 	}
 
+	/**
+	 * With no correspondence registered anywhere in the package hierarchy, the walk reaches the
+	 * root and returns null, rather than looping or throwing.
+	 */
 	@Test
 	void noCorrespondenceAnywhereInThePackageHierarchy_returnsNullAfterWalkingToTheRoot(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

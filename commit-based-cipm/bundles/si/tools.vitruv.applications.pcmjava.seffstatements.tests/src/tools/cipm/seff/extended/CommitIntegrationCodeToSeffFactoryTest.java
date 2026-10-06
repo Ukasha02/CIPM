@@ -23,18 +23,21 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
 /**
  * Tests {@link CommitIntegrationCodeToSeffFactory}. Two of its four methods have their own
  * logic; the other two delegate to a held PojoJava2PcmCodeToSeffFactory instance instead of
- * duplicating it (commit C2's composition swap, replacing inheritance). These tests confirm
- * the delegated methods still produce the same concrete types they did before that swap.
+ * duplicating it (this class used to extend PojoJava2PcmCodeToSeffFactory directly; it now
+ * holds one as a field instead, replacing inheritance with composition). These tests confirm
+ * the delegated methods still produce the same concrete types they did before that change.
  */
 class CommitIntegrationCodeToSeffFactoryTest {
 
 	private final CommitIntegrationCodeToSeffFactory factory = new CommitIntegrationCodeToSeffFactory();
 
+	/** This factory's own, non-delegated method returns the commit-integration-specific finder. */
 	@Test
 	void createBasicComponentFinding_returnsTheCommitIntegrationFinder() {
 		assertInstanceOf(BasicComponentForCommitIntegrationFinder.class, factory.createBasicComponentFinding());
 	}
 
+	/** This method delegates to the held PojoJava2PcmCodeToSeffFactory, still producing the package-mapping finder. */
 	@Test
 	void createInterfaceOfExternalCallFindingFactory_delegatesToThePackageMappingDefault(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -50,6 +53,7 @@ class CommitIntegrationCodeToSeffFactoryTest {
 		assertInstanceOf(InterfaceOfExternalCallFinderForPackageMapping.class, finding);
 	}
 
+	/** This method also delegates, still producing the package-mapping finder. */
 	@Test
 	void createResourceDemandingBehaviourForClassMethodFinding_delegatesToThePackageMappingDefault(
 			@TempDir Path tempDir) {
@@ -59,6 +63,7 @@ class CommitIntegrationCodeToSeffFactoryTest {
 				factory.createResourceDemandingBehaviourForClassMethodFinding(view));
 	}
 
+	/** This factory's own, non-delegated method returns the commit-integration-specific classification strategy. */
 	@Test
 	void createAbstractFunctionClassificationStrategy_returnsTheCommitIntegrationStrategy(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);

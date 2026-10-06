@@ -51,6 +51,10 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class FineGrainedClassMethodBodyChangedTransformationTest {
 
+	/**
+	 * Skips the real SoMoX call, populating the new SEFF with the given actions instead, and
+	 * returns the given fixture repository in place of the one real SoMoX would have built.
+	 */
 	private static class SoMoXFreeTransformation extends FineGrainedClassMethodBodyChangedTransformation {
 		private final List<AbstractAction> newActionsFromSoMoX;
 		private final SourceCodeDecoratorRepository fixtureRepository;
@@ -80,6 +84,10 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 		}
 	}
 
+	/**
+	 * The "old SEFF has no real steps yet" fast path: with nothing to compare against, every
+	 * new action is simply added between the existing bookends.
+	 */
 	@Test
 	void execute_oldSeffHasNoRelevantActions_allNewActionsAreAdded(@TempDir Path tempDir) {
 		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
@@ -153,9 +161,9 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 	}
 
 	/**
-	 * The fine-grained "zero statements" open question - not testing-only, this is the only
-	 * test that will ever exercise it, since .finegrained is structurally unreachable through
-	 * the TEAMMATES pipeline.
+	 * The fine-grained "zero statements" open question. This is not just one test among
+	 * several covering it - it is the only test that will ever exercise this scenario, since
+	 * .finegrained is structurally unreachable through the TEAMMATES pipeline.
 	 *
 	 * <p>Found by tracing this by hand before writing it: when a new action has zero linked
 	 * statements, "how many of its statements match this old action's statements" is trivially
@@ -165,7 +173,7 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 	 * completely unrelated, unchanged old action checked afterwards finds nothing left to
 	 * correspond to it and gets classified as deleted - removed from the SEFF as a side effect,
 	 * even though nothing about it changed. Recorded as current behaviour; whether this is
-	 * correct is exactly the open question still sitting with the supervisor.
+	 * correct is still an open design question, not yet resolved.
 	 */
 	@Test
 	void execute_newActionHasZeroLinkedStatements_arbitraryMatchDeletesAnUnrelatedOldAction(
