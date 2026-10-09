@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.EList;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
 import org.emftext.language.java.members.Method;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -40,11 +41,26 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class ClassMethodBodyChangedTransformationTest {
 
+	@TempDir
+	Path tempDir;
+
+	/** Fresh behaviour for the ensureStartAndStopAction tests; unused by the execute() tests below. */
+	private ResourceDemandingBehaviour behaviour;
+
+	/** Fresh view/method for the execute() tests below; unused by the ensureStartAndStopAction tests. */
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private ClassMethod method;
+
+	@BeforeEach
+	void setUp() {
+		behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		method = MembersFactory.eINSTANCE.createClassMethod();
+	}
+
 	/** An empty behaviour gets both a StartAction and a StopAction added, since neither exists yet. */
 	@Test
 	void emptyBehaviour_getsBothStartAndStopActionAdded() {
-		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
-
 		ClassMethodBodyChangedTransformation.ensureStartAndStopAction(behaviour);
 
 		EList<AbstractAction> steps = behaviour.getSteps_Behaviour();
@@ -56,7 +72,6 @@ class ClassMethodBodyChangedTransformationTest {
 	/** A behaviour that already has a StartAction only gets a StopAction appended; the existing StartAction is left in place. */
 	@Test
 	void behaviourWithOnlyAStartAction_getsAStopActionAppended() {
-		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
 		StartAction existingStart = SeffFactory.eINSTANCE.createStartAction();
 		behaviour.getSteps_Behaviour().add(existingStart);
 
@@ -71,7 +86,6 @@ class ClassMethodBodyChangedTransformationTest {
 	/** A behaviour that already has a StopAction only gets a StartAction prepended; the existing StopAction is left in place. */
 	@Test
 	void behaviourWithOnlyAStopAction_getsAStartActionPrepended() {
-		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
 		StopAction existingStop = SeffFactory.eINSTANCE.createStopAction();
 		behaviour.getSteps_Behaviour().add(existingStop);
 
@@ -86,7 +100,6 @@ class ClassMethodBodyChangedTransformationTest {
 	/** A behaviour that already has both bookends correctly positioned is left completely unchanged. */
 	@Test
 	void behaviourWithBothCorrectlyPositioned_isLeftUnchanged() {
-		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
 		StartAction existingStart = SeffFactory.eINSTANCE.createStartAction();
 		StopAction existingStop = SeffFactory.eINSTANCE.createStopAction();
 		behaviour.getSteps_Behaviour().add(existingStart);
@@ -108,7 +121,6 @@ class ClassMethodBodyChangedTransformationTest {
 	 */
 	@Test
 	void startActionPresentButNotAtIndexZero_isNotRecognized_soASecondOneIsInserted() {
-		ResourceDemandingBehaviour behaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
 		InternalCallAction leadingAction = SeffFactory.eINSTANCE.createInternalCallAction();
 		StartAction misplacedStart = SeffFactory.eINSTANCE.createStartAction();
 		behaviour.getSteps_Behaviour().add(leadingAction);
@@ -181,10 +193,7 @@ class ClassMethodBodyChangedTransformationTest {
 	 * this is the first time it's ever been exercised by any test.
 	 */
 	@Test
-	void execute_noResourceDemandingBehaviourToInsertInto_returnsCleanlyWithoutCallingSoMoX(
-			@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void execute_noResourceDemandingBehaviourToInsertInto_returnsCleanlyWithoutCallingSoMoX() {
 		// Makes isArchitectureRelevantChange() true, so execute() gets past its first guard.
 		ResourceDemandingBehaviour existingBehaviour = SeffFactory.eINSTANCE.createResourceDemandingBehaviour();
 		view.addCorrespondenceBetween(method, existingBehaviour, null);
@@ -209,10 +218,7 @@ class ClassMethodBodyChangedTransformationTest {
 	 * here, since simply not registering any correspondence at all naturally provokes it.
 	 */
 	@Test
-	void execute_methodHasNoResourceDemandingBehaviourCorrespondence_returnsWithoutCallingSoMoX(
-			@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void execute_methodHasNoResourceDemandingBehaviourCorrespondence_returnsWithoutCallingSoMoX() {
 		BasicComponentFinding unusedFinder = (m, correspondenceModel) -> {
 			throw new AssertionError("should not be called - execute() must return at the very first guard");
 		};
@@ -232,10 +238,7 @@ class ClassMethodBodyChangedTransformationTest {
 	 * action was genuinely removed rather than merely left untouched.
 	 */
 	@Test
-	void execute_existingSeffAction_isRemovedAlongWithItsCorrespondence(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-
+	void execute_existingSeffAction_isRemovedAlongWithItsCorrespondence() {
 		ResourceDemandingBehaviour seff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		InternalCallAction existingAction = SeffFactory.eINSTANCE.createInternalCallAction();
 		seff.getSteps_Behaviour().add(existingAction);

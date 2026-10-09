@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -29,14 +30,25 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class CorrespondenceModelUtilTest {
 
+	@TempDir
+	Path tempDir;
+
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private ClassMethod method;
+	private BasicComponent component;
+
+	/** Every test needs a method corresponding to a component - what's checked on top of that varies. */
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		method = MembersFactory.eINSTANCE.createClassMethod();
+		component = RepositoryFactory.eINSTANCE.createBasicComponent();
+		view.addCorrespondenceBetween(method, component, null);
+	}
+
 	/** Returns the one corresponding object whose type matches what was asked for. */
 	@Test
-	void getCorrespondingEObjects_returnsTheCorrespondingObjectOfTheRequestedType(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponent component = RepositoryFactory.eINSTANCE.createBasicComponent();
-		view.addCorrespondenceBetween(method, component, null);
-
+	void getCorrespondingEObjects_returnsTheCorrespondingObjectOfTheRequestedType() {
 		var result = CorrespondenceModelUtil.getCorrespondingEObjects(view, method, BasicComponent.class);
 
 		assertEquals(1, result.size());
@@ -45,12 +57,8 @@ class CorrespondenceModelUtilTest {
 
 	/** A second correspondence of a different, unrequested type on the same object is ignored. */
 	@Test
-	void getCorrespondingEObjects_ignoresCorrespondencesOfAnUnrequestedType(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponent component = RepositoryFactory.eINSTANCE.createBasicComponent();
+	void getCorrespondingEObjects_ignoresCorrespondencesOfAnUnrequestedType() {
 		StartAction unrelatedTypeCorrespondence = SeffFactory.eINSTANCE.createStartAction();
-		view.addCorrespondenceBetween(method, component, null);
 		view.addCorrespondenceBetween(method, unrelatedTypeCorrespondence, null);
 
 		var result = CorrespondenceModelUtil.getCorrespondingEObjects(view, method, BasicComponent.class);
@@ -61,8 +69,7 @@ class CorrespondenceModelUtilTest {
 
 	/** An object with no correspondences at all returns an empty list, not null. */
 	@Test
-	void getCorrespondingEObjects_noCorrespondences_returnsEmptyList(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void getCorrespondingEObjects_noCorrespondences_returnsEmptyList() {
 		ClassMethod methodWithNoCorrespondences = MembersFactory.eINSTANCE.createClassMethod();
 
 		var result = CorrespondenceModelUtil.getCorrespondingEObjects(view, methodWithNoCorrespondences,
@@ -73,12 +80,7 @@ class CorrespondenceModelUtilTest {
 
 	/** After removal, the object has no correspondences left and a follow-up lookup finds nothing. */
 	@Test
-	void removeCorrespondencesFor_removesAllCorrespondencesOfThatObject(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponent component = RepositoryFactory.eINSTANCE.createBasicComponent();
-		view.addCorrespondenceBetween(method, component, null);
-
+	void removeCorrespondencesFor_removesAllCorrespondencesOfThatObject() {
 		CorrespondenceModelUtil.removeCorrespondencesFor(view, method);
 
 		assertFalse(view.hasCorrespondences(method));

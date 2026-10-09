@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.nio.file.Path;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -28,6 +29,19 @@ class PojoJava2PcmCodeToSeffFactoryTest {
 
 	private final PojoJava2PcmCodeToSeffFactory factory = new PojoJava2PcmCodeToSeffFactory();
 
+	@TempDir
+	Path tempDir;
+
+	/** Shared across the three tests that need them; the first test needs neither. */
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private BasicComponent basicComponent;
+
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		basicComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
+	}
+
 	/** Returns the package-mapping-specific component finder. */
 	@Test
 	void createBasicComponentFinding_returnsThePackageMappingFinder() {
@@ -36,9 +50,7 @@ class PojoJava2PcmCodeToSeffFactoryTest {
 
 	/** Returns a factory that itself produces the package-mapping-specific external-call finder. */
 	@Test
-	void createInterfaceOfExternalCallFindingFactory_producesAPackageMappingFinder(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		BasicComponent basicComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
+	void createInterfaceOfExternalCallFindingFactory_producesAPackageMappingFinder() {
 		SourceCodeDecoratorRepository sourceCodeDecoratorRepository = TestModelObjects
 				.newSourceCodeDecoratorRepository();
 
@@ -52,19 +64,15 @@ class PojoJava2PcmCodeToSeffFactoryTest {
 
 	/** Returns the package-mapping-specific behaviour finder. */
 	@Test
-	void createResourceDemandingBehaviourForClassMethodFinding_returnsThePackageMappingFinder(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-
+	void createResourceDemandingBehaviourForClassMethodFinding_returnsThePackageMappingFinder() {
 		assertInstanceOf(ResourceDemandingBehaviourForClassMethodFinderForPackageMapping.class,
 				factory.createResourceDemandingBehaviourForClassMethodFinding(view));
 	}
 
 	/** Returns the package-mapping-specific classification strategy. */
 	@Test
-	void createAbstractFunctionClassificationStrategy_returnsThePackageMappingStrategy(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void createAbstractFunctionClassificationStrategy_returnsThePackageMappingStrategy() {
 		BasicComponentFinding unusedFinder = (method, correspondenceModel) -> null;
-		BasicComponent basicComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
 
 		assertInstanceOf(FunctionClassificationStrategyForPackageMapping.class,
 				factory.createAbstractFunctionClassificationStrategy(view, unusedFinder, basicComponent));

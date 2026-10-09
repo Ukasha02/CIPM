@@ -9,6 +9,7 @@ import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.InterfaceMethod;
 import org.emftext.language.java.members.MembersFactory;
 import org.emftext.language.java.members.Method;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -31,6 +32,17 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  * BasicComponentFinding is enough; no SoMoX object is ever touched.
  */
 class FunctionClassificationStrategyForPackageMappingTest {
+
+	@TempDir
+	Path tempDir;
+
+	/** Every test needs a correspondence view - the method and finder behaviour varies per test. */
+	private EditableCorrespondenceModelView<Correspondence> view;
+
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+	}
 
 	/** Exposes the two protected methods under test as public, changing nothing else. */
 	private static class ExposedStrategy extends FunctionClassificationStrategyForPackageMapping {
@@ -55,8 +67,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 	 * correspondence short-circuits before the component finder is ever consulted.
 	 */
 	@Test
-	void methodCorrespondsToAnOperationSignature_isExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodCorrespondsToAnOperationSignature_isExternal() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
 		view.addCorrespondenceBetween(method, signature, null);
@@ -71,8 +82,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	/** A method whose own component differs from the strategy's component is external. */
 	@Test
-	void methodBelongsToADifferentComponent_isExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodBelongsToADifferentComponent_isExternal() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponent otherComponent = TestModelObjects.otherComponent();
 		BasicComponentFinding finder = (m, correspondenceModel) -> otherComponent;
@@ -83,8 +93,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	/** A method whose own component is the strategy's own component is not external. */
 	@Test
-	void methodBelongsToTheOwnComponent_isNotExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodBelongsToTheOwnComponent_isNotExternal() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> TestModelObjects.ownComponent();
 		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
@@ -94,8 +103,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	/** A method whose component cannot be found at all is not external. */
 	@Test
-	void methodsComponentCannotBeFound_isNotExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodsComponentCannotBeFound_isNotExternal() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
 		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
@@ -105,8 +113,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	/** A method that isn't a ClassMethod is not external - the instanceof check fails before the finder is ever consulted. */
 	@Test
-	void methodIsNotAClassMethod_isNotExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodIsNotAClassMethod_isNotExternal() {
 		InterfaceMethod method = MembersFactory.eINSTANCE.createInterfaceMethod();
 		// Never consulted: the instanceof ClassMethod check fails before the finder is used.
 		BasicComponentFinding unusedFinder = (m, correspondenceModel) -> {
@@ -121,8 +128,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	/** A method whose component cannot be found at all is classified as a library call. */
 	@Test
-	void methodsComponentCannotBeFound_isLibraryCall(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodsComponentCannotBeFound_isLibraryCall() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
 		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
@@ -132,8 +138,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 
 	/** A method whose own component is the strategy's own component is not a library call. */
 	@Test
-	void methodBelongsToTheOwnComponent_isNotLibraryCall(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodBelongsToTheOwnComponent_isNotLibraryCall() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> TestModelObjects.ownComponent();
 		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
@@ -146,8 +151,7 @@ class FunctionClassificationStrategyForPackageMappingTest {
 	 * characterizing that behaviour, not asserting it's the ideal outcome.
 	 */
 	@Test
-	void methodBelongsToADifferentComponent_isLibraryCallWithWarning(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodBelongsToADifferentComponent_isLibraryCallWithWarning() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponent otherComponent = TestModelObjects.otherComponent();
 		BasicComponentFinding finder = (m, correspondenceModel) -> otherComponent;

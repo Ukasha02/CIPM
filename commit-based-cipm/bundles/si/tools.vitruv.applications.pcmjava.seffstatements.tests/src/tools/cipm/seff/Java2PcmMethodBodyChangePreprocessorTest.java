@@ -9,6 +9,7 @@ import org.emftext.language.java.commons.CommonsPackage;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.Field;
 import org.emftext.language.java.members.MembersFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import tools.vitruv.change.atomic.EChange;
@@ -37,10 +38,17 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 
 	private final Java2PcmMethodBodyChangePreprocessor preprocessor = new Java2PcmMethodBodyChangePreprocessor(null);
 
+	/** A ClassMethod, used by the three test cases whose change element is a method rename. */
+	private ClassMethod method;
+
+	@BeforeEach
+	void setUp() {
+		method = MembersFactory.eINSTANCE.createClassMethod();
+	}
+
 	/** A method renamed to a non-empty name is handled. */
 	@Test
 	void methodRenamedToNonEmptyName_isHandled() {
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		ReplaceSingleValuedEAttribute<ClassMethod, String> change = TypeInferringAtomicEChangeFactory.getInstance()
 				.createReplaceSingleAttributeChange(method, CommonsPackage.Literals.NAMED_ELEMENT__NAME, OLD_NAME,
 						NEW_NAME);
@@ -51,7 +59,6 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 	/** A method renamed to the empty string is not handled - the empty-name guard. */
 	@Test
 	void methodRenamedToEmptyName_isNotHandled() {
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		ReplaceSingleValuedEAttribute<ClassMethod, String> change = TypeInferringAtomicEChangeFactory.getInstance()
 				.createReplaceSingleAttributeChange(method, CommonsPackage.Literals.NAMED_ELEMENT__NAME, OLD_NAME,
 						"");
@@ -73,7 +80,6 @@ class Java2PcmMethodBodyChangePreprocessorTest {
 	/** A change to a Method's attribute other than its name is not handled. */
 	@Test
 	void unrelatedAttributeOfMethodChanged_isNotHandled() {
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		EAttribute someOtherAttribute = EcoreFactory.eINSTANCE.createEAttribute();
 		ReplaceSingleValuedEAttribute<ClassMethod, String> change = TypeInferringAtomicEChangeFactory.getInstance()
 				.createReplaceSingleAttributeChange(method, someOtherAttribute, "oldValue", "newValue");

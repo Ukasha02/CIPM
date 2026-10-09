@@ -7,6 +7,7 @@ import java.nio.file.Path;
 
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -41,15 +42,33 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 	/** Id of an interface that no component in these tests ever declares it requires. */
 	private static final String INTERFACE_NOBODY_REQUIRES = "interface-nobody-requires";
 
+	@TempDir
+	Path tempDir;
+
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private ClassMethod method;
+	private BasicComponent ownComponent;
+	private InterfaceOfExternalCallFinderForPackageMapping finder;
+
+	/**
+	 * Every test needs a method, a bare component (requiring nothing unless a test adds a
+	 * role to it), and a finder over the two - only what the method corresponds to varies.
+	 */
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		method = MembersFactory.eINSTANCE.createClassMethod();
+		ownComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
+		finder = new InterfaceOfExternalCallFinderForPackageMapping(view, ownComponent);
+	}
+
 	/**
 	 * The fully-successful case: a real signature correspondence exists and the component
 	 * genuinely requires that interface, so both fields come back populated. The baseline
 	 * every other case in this class is contrasted against.
 	 */
 	@Test
-	void methodCorrespondsToASignatureWithAMatchingRequiredRole_bothFieldsPopulated(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void methodCorrespondsToASignatureWithAMatchingRequiredRole_bothFieldsPopulated() {
 		OperationInterface opInterface = TestModelObjects.interfaceWithId("shared-interface");
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
 		signature.setInterface__OperationSignature(opInterface);
@@ -57,10 +76,7 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 
 		OperationRequiredRole matchingRole = RepositoryFactory.eINSTANCE.createOperationRequiredRole();
 		matchingRole.setRequiredInterface__OperationRequiredRole(opInterface);
-		BasicComponent ownComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
 		ownComponent.getRequiredRoles_InterfaceRequiringEntity().add(matchingRole);
-
-		var finder = new InterfaceOfExternalCallFinderForPackageMapping(view, ownComponent);
 
 		InterfacePortOperationTuple result = finder.getCalledInterfacePort(method, null);
 
@@ -75,17 +91,11 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 	 * empty tuple below, for what is arguably the same underlying situation ("not found").
 	 */
 	@Test
-	void methodCorrespondsToASignatureButNoMatchingRequiredRoleExists_signatureSetRoleNull(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void methodCorrespondsToASignatureButNoMatchingRequiredRoleExists_signatureSetRoleNull() {
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
 		signature.setInterface__OperationSignature(TestModelObjects.interfaceWithId(INTERFACE_NOBODY_REQUIRES));
 		view.addCorrespondenceBetween(method, signature, null);
-
-		// The component requires no interfaces at all - deliberately no matching role possible.
-		BasicComponent ownComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
-
-		var finder = new InterfaceOfExternalCallFinderForPackageMapping(view, ownComponent);
+		// ownComponent requires no interfaces at all - deliberately no matching role possible.
 
 		InterfacePortOperationTuple result = finder.getCalledInterfacePort(method, null);
 
@@ -99,12 +109,7 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 	 * "not found" situation, a genuinely different result shape.
 	 */
 	@Test
-	void methodHasNoCorrespondenceAtAll_bothFieldsNull(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		BasicComponent ownComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
-		var finder = new InterfaceOfExternalCallFinderForPackageMapping(view, ownComponent);
-
+	void methodHasNoCorrespondenceAtAll_bothFieldsNull() {
 		InterfacePortOperationTuple result = finder.getCalledInterfacePort(method, null);
 
 		assertNull(result.signature);
@@ -117,18 +122,12 @@ class InterfaceOfExternalCallFinderForPackageMappingTest {
 	 * that signature is used instead.
 	 */
 	@Test
-	void methodCorrespondsOnlyToASeffWhoseDescribedServiceIsASignature_signatureFoundViaSeff(
-			@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void methodCorrespondsOnlyToASeffWhoseDescribedServiceIsASignature_signatureFoundViaSeff() {
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
 		signature.setInterface__OperationSignature(TestModelObjects.interfaceWithId(INTERFACE_NOBODY_REQUIRES));
 		ResourceDemandingSEFF seff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		seff.setDescribedService__SEFF(signature);
 		view.addCorrespondenceBetween(method, seff, null);
-
-		BasicComponent ownComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
-		var finder = new InterfaceOfExternalCallFinderForPackageMapping(view, ownComponent);
 
 		InterfacePortOperationTuple result = finder.getCalledInterfacePort(method, null);
 

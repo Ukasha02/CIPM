@@ -15,6 +15,7 @@ import org.emftext.language.java.containers.ContainersFactory;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -37,6 +38,16 @@ class BasicComponentForPackageMappingFinderTest {
 
 	private final BasicComponentForPackageMappingFinder finder = new BasicComponentForPackageMappingFinder();
 
+	@TempDir
+	Path tempDir;
+
+	private EditableCorrespondenceModelView<Correspondence> view;
+
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+	}
+
 	/**
 	 * The finder builds its own internal ResourceSet (createPackage's "dummy resource", used to
 	 * give the package object a resolvable URI). That ResourceSet - like any ResourceSet that
@@ -54,8 +65,7 @@ class BasicComponentForPackageMappingFinderTest {
 
 	/** A detached method with no containing compilation unit returns null immediately. */
 	@Test
-	void methodHasNoContainingCompilationUnit_returnsNull(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodHasNoContainingCompilationUnit_returnsNull() {
 		ClassMethod detachedMethod = MembersFactory.eINSTANCE.createClassMethod();
 
 		assertNull(finder.findBasicComponentForMethod(detachedMethod, view));
@@ -66,8 +76,7 @@ class BasicComponentForPackageMappingFinderTest {
 	 * root and returns null, rather than looping or throwing.
 	 */
 	@Test
-	void noCorrespondenceAnywhereInThePackageHierarchy_returnsNullAfterWalkingToTheRoot(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void noCorrespondenceAnywhereInThePackageHierarchy_returnsNullAfterWalkingToTheRoot() {
 		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
 		Class containingClass = ClassifiersFactory.eINSTANCE.createClass();
 		containingClass.getMembers().add(method);

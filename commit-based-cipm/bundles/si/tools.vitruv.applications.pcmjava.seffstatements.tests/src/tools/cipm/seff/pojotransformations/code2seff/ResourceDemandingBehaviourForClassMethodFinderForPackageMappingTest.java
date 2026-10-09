@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.seff.ResourceDemandingInternalBehaviour;
@@ -26,24 +27,32 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  */
 class ResourceDemandingBehaviourForClassMethodFinderForPackageMappingTest {
 
+	@TempDir
+	Path tempDir;
+
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private ClassMethod method;
+	private ResourceDemandingBehaviourForClassMethodFinderForPackageMapping finder;
+
+	/** Every test needs a method and a finder over a fresh view - only what the method corresponds to varies. */
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		method = MembersFactory.eINSTANCE.createClassMethod();
+		finder = new ResourceDemandingBehaviourForClassMethodFinderForPackageMapping(view);
+	}
+
 	/** A method with no corresponding SEFF returns null. */
 	@Test
-	void getCorrespondingRDSEFForClassMethod_noCorrespondence_returnsNull(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		var finder = new ResourceDemandingBehaviourForClassMethodFinderForPackageMapping(view);
-
+	void getCorrespondingRDSEFForClassMethod_noCorrespondence_returnsNull() {
 		assertNull(finder.getCorrespondingRDSEFForClassMethod(method));
 	}
 
 	/** A method with exactly one corresponding SEFF returns it. */
 	@Test
-	void getCorrespondingRDSEFForClassMethod_oneCorresponds_returnsIt(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void getCorrespondingRDSEFForClassMethod_oneCorresponds_returnsIt() {
 		ResourceDemandingSEFF seff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		view.addCorrespondenceBetween(method, seff, null);
-		var finder = new ResourceDemandingBehaviourForClassMethodFinderForPackageMapping(view);
 
 		assertSame(seff, finder.getCorrespondingRDSEFForClassMethod(method));
 	}
@@ -55,37 +64,27 @@ class ResourceDemandingBehaviourForClassMethodFinderForPackageMappingTest {
 	 * crashing (the warning-logged path).
 	 */
 	@Test
-	void getCorrespondingRDSEFForClassMethod_multipleCorrespond_returnsOneOfThem(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void getCorrespondingRDSEFForClassMethod_multipleCorrespond_returnsOneOfThem() {
 		ResourceDemandingSEFF first = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		ResourceDemandingSEFF second = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		view.addCorrespondenceBetween(method, first, null);
 		view.addCorrespondenceBetween(method, second, null);
-		var finder = new ResourceDemandingBehaviourForClassMethodFinderForPackageMapping(view);
 
 		assertTrue(List.of(first, second).contains(finder.getCorrespondingRDSEFForClassMethod(method)));
 	}
 
 	/** A method with no corresponding internal behaviour returns null. */
 	@Test
-	void getCorrespondingResourceDemandingInternalBehaviour_noCorrespondence_returnsNull(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		var finder = new ResourceDemandingBehaviourForClassMethodFinderForPackageMapping(view);
-
+	void getCorrespondingResourceDemandingInternalBehaviour_noCorrespondence_returnsNull() {
 		assertNull(finder.getCorrespondingResourceDemandingInternalBehaviour(method));
 	}
 
 	/** A method with exactly one corresponding internal behaviour returns it. */
 	@Test
-	void getCorrespondingResourceDemandingInternalBehaviour_oneCorresponds_returnsIt(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void getCorrespondingResourceDemandingInternalBehaviour_oneCorresponds_returnsIt() {
 		ResourceDemandingInternalBehaviour internalBehaviour = SeffFactory.eINSTANCE
 				.createResourceDemandingInternalBehaviour();
 		view.addCorrespondenceBetween(method, internalBehaviour, null);
-		var finder = new ResourceDemandingBehaviourForClassMethodFinderForPackageMapping(view);
 
 		assertSame(internalBehaviour, finder.getCorrespondingResourceDemandingInternalBehaviour(method));
 	}
@@ -96,15 +95,12 @@ class ResourceDemandingBehaviourForClassMethodFinderForPackageMappingTest {
 	 * each public method must still return only its own type, not the other one.
 	 */
 	@Test
-	void methodCorrespondsToBothTypes_eachLookupReturnsOnlyItsOwnType(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
+	void methodCorrespondsToBothTypes_eachLookupReturnsOnlyItsOwnType() {
 		ResourceDemandingSEFF seff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		ResourceDemandingInternalBehaviour internalBehaviour = SeffFactory.eINSTANCE
 				.createResourceDemandingInternalBehaviour();
 		view.addCorrespondenceBetween(method, seff, null);
 		view.addCorrespondenceBetween(method, internalBehaviour, null);
-		var finder = new ResourceDemandingBehaviourForClassMethodFinderForPackageMapping(view);
 
 		assertSame(seff, finder.getCorrespondingRDSEFForClassMethod(method));
 		assertSame(internalBehaviour, finder.getCorrespondingResourceDemandingInternalBehaviour(method));

@@ -14,6 +14,7 @@ import org.emftext.language.java.containers.ContainersFactory;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
 import org.emftext.language.java.members.Method;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -37,6 +38,17 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  * latent NullPointerException risk, characterized below rather than worked around.
  */
 class FunctionClassificationStrategyForCommitIntegrationTest {
+
+	@TempDir
+	Path tempDir;
+
+	/** Every test needs a correspondence view - what's registered in it, and the method used, varies. */
+	private EditableCorrespondenceModelView<Correspondence> view;
+
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+	}
 
 	/** Exposes the protected isExternalCall under test as public, changing nothing else. */
 	private static class ExposedStrategy extends FunctionClassificationStrategyForCommitIntegration {
@@ -66,8 +78,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 	 * correspondence), the REST-package check is never even consulted.
 	 */
 	@Test
-	void superClassifiesTheCallAsExternal_isExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void superClassifiesTheCallAsExternal_isExternal() {
 		ClassMethod method = methodInPackage(List.of("com", "example"));
 		OperationSignature signature = RepositoryFactory.eINSTANCE.createOperationSignature();
 		view.addCorrespondenceBetween(method, signature, null);
@@ -81,8 +92,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 
 	/** A method with no package namespace at all is not external. */
 	@Test
-	void methodHasNoNamespace_isNotExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodHasNoNamespace_isNotExternal() {
 		ClassMethod method = methodInPackage(List.of());
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
 		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
@@ -92,8 +102,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 
 	/** A method whose package isn't configured as a REST client API is not external. */
 	@Test
-	void methodsPackageIsNotAConfiguredRestClientPackage_isNotExternal(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodsPackageIsNotAConfiguredRestClientPackage_isNotExternal() {
 		ClassMethod method = methodInPackage(List.of("com", "example"));
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
 		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());
@@ -108,8 +117,7 @@ class FunctionClassificationStrategyForCommitIntegrationTest {
 	 * Recorded as current behaviour, not asserted to be intended.
 	 */
 	@Test
-	void methodHasNoContainingCompilationUnit_throwsNullPointerException(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void methodHasNoContainingCompilationUnit_throwsNullPointerException() {
 		ClassMethod detachedMethod = MembersFactory.eINSTANCE.createClassMethod();
 		BasicComponentFinding finder = (m, correspondenceModel) -> null;
 		ExposedStrategy strategy = new ExposedStrategy(finder, view, TestModelObjects.ownComponent());

@@ -12,6 +12,7 @@ import org.emftext.language.java.members.MembersFactory;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.statements.StatementsFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -54,6 +55,19 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  * question, so no assertion here depends on the tag.
  */
 class ExtendedClassMethodBodyChangedTransformationTest {
+
+	@TempDir
+	Path tempDir;
+
+	/** Every test needs a method with an empty SEFF to call execute() against. */
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private ClassMethod method;
+
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		method = methodWithSeff(view);
+	}
 
 	/**
 	 * Skips the real SoMoX call, populating the new SEFF with the given actions instead, and
@@ -130,9 +144,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 	 * instrumentation step can find the code behind the action.
 	 */
 	@Test
-	void execute_actionLinkedToOneStatement_actionAndStatementAreCorresponded(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = methodWithSeff(view);
+	void execute_actionLinkedToOneStatement_actionAndStatementAreCorresponded() {
 		InternalCallAction action = SeffFactory.eINSTANCE.createInternalCallAction();
 		Statement statement = StatementsFactory.eINSTANCE.createEmptyStatement();
 		SourceCodeDecoratorRepository repository = newRepository();
@@ -148,9 +160,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 	 * each linked statement must get its own correspondence, none dropped.
 	 */
 	@Test
-	void execute_actionLinkedToTwoStatements_bothStatementsAreCorresponded(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = methodWithSeff(view);
+	void execute_actionLinkedToTwoStatements_bothStatementsAreCorresponded() {
 		InternalCallAction action = SeffFactory.eINSTANCE.createInternalCallAction();
 		Statement first = StatementsFactory.eINSTANCE.createEmptyStatement();
 		Statement second = StatementsFactory.eINSTANCE.createEmptyStatement();
@@ -171,10 +181,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 	 * normal link second, proving the loop moves on to the next link (continue, not return).
 	 */
 	@Test
-	void execute_actionInsideInternalBehaviour_isSkippedButLaterLinksAreStillBound(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = methodWithSeff(view);
-
+	void execute_actionInsideInternalBehaviour_isSkippedButLaterLinksAreStillBound() {
 		ResourceDemandingInternalBehaviour internalBehaviour = SeffFactory.eINSTANCE
 				.createResourceDemandingInternalBehaviour();
 		InternalCallAction nestedAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -199,9 +206,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 	 * links for other SEFF elements) is ignored rather than crashing on a bad cast.
 	 */
 	@Test
-	void execute_linkElementIsNotAnAction_isIgnoredWithoutError(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = methodWithSeff(view);
+	void execute_linkElementIsNotAnAction_isIgnoredWithoutError() {
 		BasicComponent notAnAction = RepositoryFactory.eINSTANCE.createBasicComponent();
 		Statement statement = StatementsFactory.eINSTANCE.createEmptyStatement();
 		SourceCodeDecoratorRepository repository = newRepository();
@@ -217,9 +222,7 @@ class ExtendedClassMethodBodyChangedTransformationTest {
 	 * extracted), execute() must finish cleanly and simply bind nothing.
 	 */
 	@Test
-	void execute_noSourceCodeDecoratorRepository_bindsNothingAndDoesNotFail(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = methodWithSeff(view);
+	void execute_noSourceCodeDecoratorRepository_bindsNothingAndDoesNotFail() {
 		InternalCallAction action = SeffFactory.eINSTANCE.createInternalCallAction();
 
 		assertDoesNotThrow(() -> run(method, view, List.of(action), null));

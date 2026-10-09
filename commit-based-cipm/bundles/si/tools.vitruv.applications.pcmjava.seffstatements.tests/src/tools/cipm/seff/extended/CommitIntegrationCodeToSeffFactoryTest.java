@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.nio.file.Path;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -31,6 +32,19 @@ class CommitIntegrationCodeToSeffFactoryTest {
 
 	private final CommitIntegrationCodeToSeffFactory factory = new CommitIntegrationCodeToSeffFactory();
 
+	@TempDir
+	Path tempDir;
+
+	/** Shared across the three tests that need them; the first test needs neither. */
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private BasicComponent basicComponent;
+
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		basicComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
+	}
+
 	/** This factory's own, non-delegated method returns the commit-integration-specific finder. */
 	@Test
 	void createBasicComponentFinding_returnsTheCommitIntegrationFinder() {
@@ -39,9 +53,7 @@ class CommitIntegrationCodeToSeffFactoryTest {
 
 	/** This method delegates to the held PojoJava2PcmCodeToSeffFactory, still producing the package-mapping finder. */
 	@Test
-	void createInterfaceOfExternalCallFindingFactory_delegatesToThePackageMappingDefault(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		BasicComponent basicComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
+	void createInterfaceOfExternalCallFindingFactory_delegatesToThePackageMappingDefault() {
 		SourceCodeDecoratorRepository sourceCodeDecoratorRepository = TestModelObjects
 				.newSourceCodeDecoratorRepository();
 
@@ -55,20 +67,15 @@ class CommitIntegrationCodeToSeffFactoryTest {
 
 	/** This method also delegates, still producing the package-mapping finder. */
 	@Test
-	void createResourceDemandingBehaviourForClassMethodFinding_delegatesToThePackageMappingDefault(
-			@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-
+	void createResourceDemandingBehaviourForClassMethodFinding_delegatesToThePackageMappingDefault() {
 		assertInstanceOf(ResourceDemandingBehaviourForClassMethodFinderForPackageMapping.class,
 				factory.createResourceDemandingBehaviourForClassMethodFinding(view));
 	}
 
 	/** This factory's own, non-delegated method returns the commit-integration-specific classification strategy. */
 	@Test
-	void createAbstractFunctionClassificationStrategy_returnsTheCommitIntegrationStrategy(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
+	void createAbstractFunctionClassificationStrategy_returnsTheCommitIntegrationStrategy() {
 		BasicComponentFinding unusedFinder = (method, correspondenceModel) -> null;
-		BasicComponent basicComponent = RepositoryFactory.eINSTANCE.createBasicComponent();
 
 		assertInstanceOf(FunctionClassificationStrategyForCommitIntegration.class,
 				factory.createAbstractFunctionClassificationStrategy(view, unusedFinder, basicComponent));

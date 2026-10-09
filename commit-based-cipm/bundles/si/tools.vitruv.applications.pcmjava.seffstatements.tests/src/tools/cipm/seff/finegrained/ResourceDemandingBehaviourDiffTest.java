@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.palladiosimulator.pcm.seff.AbstractAction;
 import org.palladiosimulator.pcm.seff.SeffFactory;
@@ -20,6 +21,16 @@ import org.palladiosimulator.pcm.seff.SeffFactory;
 class ResourceDemandingBehaviourDiffTest {
 
 	private final ResourceDemandingBehaviourDiff diff = new ResourceDemandingBehaviourDiff();
+
+	/** A plain old/new action pair, used by the matching-lookup tests below; unused by the bucket tests. */
+	private AbstractAction oldAction;
+	private AbstractAction newAction;
+
+	@BeforeEach
+	void setUp() {
+		oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
+		newAction = SeffFactory.eINSTANCE.createInternalCallAction();
+	}
 
 	/** An action added as deleted shows up in the deleted bucket. */
 	@Test
@@ -59,8 +70,6 @@ class ResourceDemandingBehaviourDiffTest {
 	 */
 	@Test
 	void isModified_trueOnlyForTheExactMatchingInstanceAddedAsModified() {
-		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
-		AbstractAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
 		AbstractActionMatching modifiedMatching = new AbstractActionMatching(newAction, oldAction);
 		// A different matching instance over the very same pair of actions - deliberately
 		// checking that isModified compares the matching object itself, not "any matching
@@ -76,8 +85,6 @@ class ResourceDemandingBehaviourDiffTest {
 	/** True once a matching referencing that old action has been added, regardless of which bucket it was added to. */
 	@Test
 	void hasOldAbstractActionMatching_trueWhenAMatchingReferencesThatOldAction() {
-		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
-		AbstractAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
 		diff.addUnmodifiedAbstractAction(new AbstractActionMatching(newAction, oldAction));
 
 		assertTrue(diff.hasOldAbstractActionMatching(oldAction));
@@ -86,16 +93,12 @@ class ResourceDemandingBehaviourDiffTest {
 	/** False when no matching anywhere references that old action. */
 	@Test
 	void hasOldAbstractActionMatching_falseWhenNoMatchingReferencesIt() {
-		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
-
 		assertFalse(diff.hasOldAbstractActionMatching(oldAction));
 	}
 
 	/** True once a matching referencing that new action has been added. */
 	@Test
 	void hasNewAbstractActionMatching_trueWhenAMatchingReferencesThatNewAction() {
-		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
-		AbstractAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
 		diff.addModifiedAbstractAction(new AbstractActionMatching(newAction, oldAction));
 
 		assertTrue(diff.hasNewAbstractActionMatching(newAction));
@@ -104,16 +107,12 @@ class ResourceDemandingBehaviourDiffTest {
 	/** False when no matching anywhere references that new action. */
 	@Test
 	void hasNewAbstractActionMatching_falseWhenNoMatchingReferencesIt() {
-		AbstractAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
-
 		assertFalse(diff.hasNewAbstractActionMatching(newAction));
 	}
 
 	/** Returns the exact matching instance that contains the given new action. */
 	@Test
 	void getNewAbstractActionMatching_returnsTheMatchingContainingThatNewAction() {
-		AbstractAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
-		AbstractAction newAction = SeffFactory.eINSTANCE.createInternalCallAction();
 		AbstractActionMatching matching = new AbstractActionMatching(newAction, oldAction);
 		diff.addUnmodifiedAbstractAction(matching);
 

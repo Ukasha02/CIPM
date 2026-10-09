@@ -13,6 +13,7 @@ import org.emftext.language.java.members.MembersFactory;
 import org.emftext.language.java.members.Method;
 import org.emftext.language.java.statements.Statement;
 import org.emftext.language.java.statements.StatementsFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -50,6 +51,19 @@ import tools.vitruv.change.correspondence.view.EditableCorrespondenceModelView;
  * the merge logic insert a second, spurious pair into the existing SEFF.
  */
 class FineGrainedClassMethodBodyChangedTransformationTest {
+
+	@TempDir
+	Path tempDir;
+
+	/** Every test needs a view and a (not-yet-corresponded) method; what's built around them varies. */
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private ClassMethod method;
+
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		method = MembersFactory.eINSTANCE.createClassMethod();
+	}
 
 	/**
 	 * Skips the real SoMoX call, populating the new SEFF with the given actions instead, and
@@ -89,10 +103,7 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 	 * new action is simply added between the existing bookends.
 	 */
 	@Test
-	void execute_oldSeffHasNoRelevantActions_allNewActionsAreAdded(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-
+	void execute_oldSeffHasNoRelevantActions_allNewActionsAreAdded() {
 		ResourceDemandingSEFF oldSeff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		StartAction oldStart = SeffFactory.eINSTANCE.createStartAction();
 		StopAction oldStop = SeffFactory.eINSTANCE.createStopAction();
@@ -124,10 +135,7 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 	 * classified as unmodified: the old action stays in the SEFF, the new one is discarded.
 	 */
 	@Test
-	void execute_oldAndNewActionCorrespondToTheSameStatement_oldActionIsKeptAsUnmodified(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-
+	void execute_oldAndNewActionCorrespondToTheSameStatement_oldActionIsKeptAsUnmodified() {
 		ResourceDemandingSEFF oldSeff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		StartAction oldStart = SeffFactory.eINSTANCE.createStartAction();
 		InternalCallAction oldAction = SeffFactory.eINSTANCE.createInternalCallAction();
@@ -176,11 +184,7 @@ class FineGrainedClassMethodBodyChangedTransformationTest {
 	 * correct is still an open design question, not yet resolved.
 	 */
 	@Test
-	void execute_newActionHasZeroLinkedStatements_arbitraryMatchDeletesAnUnrelatedOldAction(
-			@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-
+	void execute_newActionHasZeroLinkedStatements_arbitraryMatchDeletesAnUnrelatedOldAction() {
 		ResourceDemandingSEFF oldSeff = SeffFactory.eINSTANCE.createResourceDemandingSEFF();
 		StartAction oldStart = SeffFactory.eINSTANCE.createStartAction();
 		InternalCallAction oldActionCheckedFirst = SeffFactory.eINSTANCE.createInternalCallAction();

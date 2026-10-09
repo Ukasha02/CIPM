@@ -9,6 +9,7 @@ import org.emftext.language.java.classifiers.Class;
 import org.emftext.language.java.classifiers.ClassifiersFactory;
 import org.emftext.language.java.members.ClassMethod;
 import org.emftext.language.java.members.MembersFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -27,13 +28,25 @@ class BasicComponentForCommitIntegrationFinderTest {
 
 	private final BasicComponentForCommitIntegrationFinder finder = new BasicComponentForCommitIntegrationFinder();
 
+	@TempDir
+	Path tempDir;
+
+	private EditableCorrespondenceModelView<Correspondence> view;
+	private Class containingClass;
+	private ClassMethod method;
+
+	/** Every test needs a method attached to a containing class - only what the class corresponds to varies. */
+	@BeforeEach
+	void setUp() {
+		view = CorrespondenceModelViews.newEditableView(tempDir);
+		containingClass = ClassifiersFactory.eINSTANCE.createClass();
+		method = MembersFactory.eINSTANCE.createClassMethod();
+		containingClass.getMembers().add(method);
+	}
+
 	/** When the method's containing class corresponds to a component, that component is returned. */
 	@Test
-	void methodsContainingClassCorrespondsToAComponent_returnsThatComponent(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		Class containingClass = ClassifiersFactory.eINSTANCE.createClass();
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		containingClass.getMembers().add(method);
+	void methodsContainingClassCorrespondsToAComponent_returnsThatComponent() {
 		BasicComponent component = RepositoryFactory.eINSTANCE.createBasicComponent();
 		view.addCorrespondenceBetween(containingClass, component, null);
 
@@ -42,12 +55,7 @@ class BasicComponentForCommitIntegrationFinderTest {
 
 	/** When the containing class has no corresponding component, the lookup returns null. */
 	@Test
-	void noCorrespondenceForTheContainingClass_returnsNull(@TempDir Path tempDir) {
-		EditableCorrespondenceModelView<Correspondence> view = CorrespondenceModelViews.newEditableView(tempDir);
-		Class containingClass = ClassifiersFactory.eINSTANCE.createClass();
-		ClassMethod method = MembersFactory.eINSTANCE.createClassMethod();
-		containingClass.getMembers().add(method);
-
+	void noCorrespondenceForTheContainingClass_returnsNull() {
 		assertNull(finder.findBasicComponentForMethod(method, view));
 	}
 }
